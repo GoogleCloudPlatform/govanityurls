@@ -1,0 +1,10 @@
+runtime: go
+api_version: go1
+
+handlers:
+- url: /.*
+  script: _go_app
+
+env_variables:
+  DOMAIN: portmidigo.org
+  REPO: https://github.com/rakyll/portmidi
