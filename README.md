@@ -19,12 +19,12 @@ go get -u -d github.com/GoogleCloudPlatform/govanityurls
 cd $(go env GOPATH)/github.com/GoogleCloudPlatform/govanityurls
 ```
 
-Edit `app.yaml` with your custom domain and git repo information.
+Edit `vanity.yaml` too any number of git repos. E.g., `CUSTOM_DOMAIN/portmidi` will
+serve the package in the [https://github.com/rakyll/portmidi] repo.
 
 ```
-env_variables:
-  DOMAIN: go.grpcutil.org
-  REPO: https://github.com/rakyll/grpcutil
+/portmidi:
+  repo: https://github.com/rakyll/portmidi
 ```
 
 Deploy the app:

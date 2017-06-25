@@ -22,40 +22,57 @@ import (
 	"net/http"
 	"os"
 	"strings"
+
+	"google.golang.org/appengine"
+
+	"io/ioutil"
+
+	"gopkg.in/yaml.v2"
 )
 
-type pkg struct {
-	Import     string
-	Repo       string
-	Display    string
-	CurrentPkg string
+type ypkg struct {
+	Repo    string `yaml:"repo,omitempty"`
+	Display string `yaml:"display,omitempty"`
 }
 
-var (
-	domain  string
-	repo    string
-	display string
-)
+var m map[string]ypkg
 
 func init() {
-	mustLoad("DOMAIN", &domain)
-	mustLoad("REPO", &repo)
-	if strings.Contains(repo, "github.com") {
-		display = fmt.Sprintf("%v %v/tree/master{/dir} %v/blob/master{/dir}/{file}#L{line}", repo, repo, repo)
+	vanity, err := ioutil.ReadFile("./vanity.yaml")
+	if err != nil {
+		log.Fatal(err)
 	}
-	if display == "" {
-		mustLoad("DISPLAY", &display)
+	if err := yaml.Unmarshal(vanity, &m); err != nil {
+		log.Fatal(err)
+	}
+	for _, e := range m {
+		if e.Display != "" {
+			continue
+		}
+		if strings.Contains(e.Repo, "github.com") {
+			e.Display = fmt.Sprintf("%v %v/tree/master{/dir} %v/blob/master{/dir}/{file}#L{line}", e.Repo, e.Repo, e.Repo)
+		}
 	}
 	http.HandleFunc("/", handle)
 }
 
 func handle(w http.ResponseWriter, r *http.Request) {
 	current := r.URL.Path
-	if err := vanityTmpl.Execute(w, &pkg{
-		Import:     domain,
-		Repo:       repo,
-		Display:    display,
-		CurrentPkg: current,
+	p, ok := m[current]
+	if !ok {
+		http.NotFound(w, r)
+		return
+	}
+
+	host := appengine.DefaultVersionHostname(appengine.NewContext(r))
+	if err := vanityTmpl.Execute(w, struct {
+		Import  string
+		Repo    string
+		Display string
+	}{
+		Import:  host + current,
+		Repo:    p.Repo,
+		Display: p.Display,
 	}); err != nil {
 		http.Error(w, "cannot render the page", http.StatusInternalServerError)
 	}
@@ -67,10 +84,10 @@ var vanityTmpl, _ = template.New("vanity").Parse(`<!DOCTYPE html>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <meta name="go-import" content="{{.Import}} git {{.Repo}}">
 <meta name="go-source" content="{{.Import}} {{.Display}}">
-<meta http-equiv="refresh" content="0; url=https://godoc.org/{{.Import}}{{.CurrentPkg}}">
+<meta http-equiv="refresh" content="0; url=https://godoc.org/{{.Import}}">
 </head>
 <body>
-Nothing to see here; <a href="https://godoc.org/{{.Import}}{{.CurrentPkg}}">move along</a>.
+Nothing to see here; <a href="https://godoc.org/{{.Import}}">move along</a>.
 </body>
 </html>`)
 

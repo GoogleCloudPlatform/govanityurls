@@ -1,0 +1,5 @@
+/portmidi:
+  repo: https://github.com/rakyll/portmidi
+
+/launchpad:
+  repo: https://github.com/rakyll/launchpad
