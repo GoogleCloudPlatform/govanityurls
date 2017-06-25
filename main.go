@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Package main contains an App Engine that serves vanity URLs for a git repo.
+// Package main contains an App Engine that serves vanity URLs for git repos.
 package main
 
 import (
