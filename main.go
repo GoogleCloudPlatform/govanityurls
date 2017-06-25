@@ -18,14 +18,13 @@ package main
 import (
 	"fmt"
 	"html/template"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"strings"
 
 	"google.golang.org/appengine"
-
-	"io/ioutil"
 
 	"gopkg.in/yaml.v2"
 )
