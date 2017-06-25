@@ -87,7 +87,7 @@ var vanityTmpl, _ = template.New("vanity").Parse(`<!DOCTYPE html>
 <meta http-equiv="refresh" content="0; url=https://godoc.org/{{.Import}}">
 </head>
 <body>
-Nothing to see here; <a href="https://godoc.org/{{.Import}}">move along</a>.
+Nothing to see here; <a href="https://godoc.org/{{.Import}}">see the package on godoc</a>.
 </body>
 </html>`)
 
