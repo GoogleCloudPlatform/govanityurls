@@ -19,7 +19,7 @@ go get -u -d github.com/GoogleCloudPlatform/govanityurls
 cd $(go env GOPATH)/github.com/GoogleCloudPlatform/govanityurls
 ```
 
-Edit `vanity.yaml` to add any number of git repos. E.g., `CUSTOM_DOMAIN/portmidi` will
+Edit `vanity.yaml` to add any number of git repos. E.g., `customdomain.com/portmidi` will
 serve the [https://github.com/rakyll/portmidi](https://github.com/rakyll/portmidi) repo.
 
 ```
@@ -38,5 +38,5 @@ $ gcloud app deploy
 That's it! You can use `go get` to get the package from your custom domain.
 
 ```
-$ go get CUSTOM_DOMAIN/portmidi
+$ go get customdomain.com/portmidi
 ```
