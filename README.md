@@ -27,6 +27,8 @@ serve the [https://github.com/rakyll/portmidi](https://github.com/rakyll/portmid
   repo: https://github.com/rakyll/portmidi
 ```
 
+You can add as many rules as you wish.
+
 Deploy the app:
 
 ```
