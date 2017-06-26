@@ -29,12 +29,10 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-type ypkg struct {
+var m map[string]struct {
 	Repo    string `yaml:"repo,omitempty"`
 	Display string `yaml:"display,omitempty"`
 }
-
-var m map[string]ypkg
 
 func init() {
 	vanity, err := ioutil.ReadFile("./vanity.yaml")
