@@ -19,7 +19,7 @@ go get -u -d github.com/GoogleCloudPlatform/govanityurls
 cd $(go env GOPATH)/github.com/GoogleCloudPlatform/govanityurls
 ```
 
-Edit `vanity.yaml` too any number of git repos. E.g., `CUSTOM_DOMAIN/portmidi` will
+Edit `vanity.yaml` to add any number of git repos. E.g., `CUSTOM_DOMAIN/portmidi` will
 serve the [https://github.com/rakyll/portmidi](https://github.com/rakyll/portmidi) repo.
 
 ```
