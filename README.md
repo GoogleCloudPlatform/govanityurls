@@ -32,3 +32,9 @@ Deploy the app:
 ```
 $ gcloud app deploy
 ```
+
+That's it! You can use `go get` to get the package from your custom domain.
+
+```
+$ go get CUSTOM_DOMAIN/portmidi
+```
