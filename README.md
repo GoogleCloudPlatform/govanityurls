@@ -16,7 +16,7 @@ Setup a [custom domain](https://cloud.google.com/appengine/docs/standard/python/
 Get the application:
 ```
 go get -u -d github.com/GoogleCloudPlatform/govanityurls
-cd $(go env GOPATH)/github.com/GoogleCloudPlatform/govanityurls
+cd $(go env GOPATH)/src/github.com/GoogleCloudPlatform/govanityurls
 ```
 
 Edit `vanity.yaml` to add any number of git repos. E.g., `customdomain.com/portmidi` will
