@@ -25,7 +25,6 @@ import (
 	"strings"
 
 	"google.golang.org/appengine"
-
 	"gopkg.in/yaml.v2"
 )
 
@@ -87,11 +86,3 @@ var vanityTmpl, _ = template.New("vanity").Parse(`<!DOCTYPE html>
 Nothing to see here; <a href="https://godoc.org/{{.Import}}">see the package on godoc</a>.
 </body>
 </html>`)
-
-func mustLoad(key string, value *string) {
-	v := os.Getenv(key)
-	if v == "" {
-		log.Fatalf("missing %v env variable", key)
-	}
-	*value = v
-}
