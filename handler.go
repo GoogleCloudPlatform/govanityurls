@@ -25,7 +25,8 @@ import (
 )
 
 type handler struct {
-	m map[string]struct {
+	host string
+	m    map[string]*struct {
 		Repo    string `yaml:"repo,omitempty"`
 		Display string `yaml:"display,omitempty"`
 	}
@@ -55,7 +56,10 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	host := requestHost(r)
+	host := h.host
+	if host == "" {
+		host = requestHost(r)
+	}
 	if err := vanityTmpl.Execute(w, struct {
 		Import  string
 		Repo    string
