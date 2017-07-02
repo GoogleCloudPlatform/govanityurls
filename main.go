@@ -21,14 +21,13 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 	"strings"
 
 	"google.golang.org/appengine"
 	"gopkg.in/yaml.v2"
 )
 
-var m map[string]struct {
+var m map[string]*struct {
 	Repo    string `yaml:"repo,omitempty"`
 	Display string `yaml:"display,omitempty"`
 }
