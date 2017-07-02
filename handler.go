@@ -29,6 +29,7 @@ type handler struct {
 	m    map[string]*struct {
 		Repo    string `yaml:"repo,omitempty"`
 		Display string `yaml:"display,omitempty"`
+		VCS     string `yaml:"vcs,omitempty"`
 	}
 }
 
@@ -38,11 +39,21 @@ func newHandler(config []byte) (*handler, error) {
 		return nil, err
 	}
 	for _, e := range h.m {
-		if e.Display != "" {
-			continue
-		}
-		if strings.Contains(e.Repo, "github.com") {
+		switch {
+		case e.Display != "":
+			// Already filled in.
+		case strings.HasPrefix(e.Repo, "https://github.com/"):
 			e.Display = fmt.Sprintf("%v %v/tree/master{/dir} %v/blob/master{/dir}/{file}#L{line}", e.Repo, e.Repo, e.Repo)
+		case strings.HasPrefix(e.Repo, "https://bitbucket.org"):
+			e.Display = fmt.Sprintf("%v %v/src/default{/dir} %v/src/default{/dir}/{file}#{file}-{line}", e.Repo, e.Repo, e.Repo)
+		}
+		switch {
+		case e.VCS != "":
+			// Already filled in.
+		case strings.HasPrefix(e.Repo, "https://bitbucket.org/"):
+			e.VCS = "hg"
+		default:
+			e.VCS = "git"
 		}
 	}
 	return h, nil
@@ -64,10 +75,12 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		Import  string
 		Repo    string
 		Display string
+		VCS     string
 	}{
 		Import:  host + current,
 		Repo:    p.Repo,
 		Display: p.Display,
+		VCS:     p.VCS,
 	}); err != nil {
 		http.Error(w, "cannot render the page", http.StatusInternalServerError)
 	}
@@ -77,7 +90,7 @@ var vanityTmpl = template.Must(template.New("vanity").Parse(`<!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<meta name="go-import" content="{{.Import}} git {{.Repo}}">
+<meta name="go-import" content="{{.Import}} {{.VCS}} {{.Repo}}">
 <meta name="go-source" content="{{.Import}} {{.Display}}">
 <meta http-equiv="refresh" content="0; url=https://godoc.org/{{.Import}}">
 </head>
