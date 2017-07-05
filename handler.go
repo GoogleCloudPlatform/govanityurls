@@ -38,7 +38,7 @@ func newHandler(config []byte) (*handler, error) {
 	if err := yaml.Unmarshal(config, &h.m); err != nil {
 		return nil, err
 	}
-	for _, e := range h.m {
+	for path, e := range h.m {
 		switch {
 		case e.Display != "":
 			// Already filled in.
@@ -47,13 +47,21 @@ func newHandler(config []byte) (*handler, error) {
 		case strings.HasPrefix(e.Repo, "https://bitbucket.org"):
 			e.Display = fmt.Sprintf("%v %v/src/default{/dir} %v/src/default{/dir}/{file}#{file}-{line}", e.Repo, e.Repo, e.Repo)
 		}
+		if e.VCS == "" {
+			if !strings.HasPrefix(e.Repo, "https://github.com/") {
+				return nil, fmt.Errorf("read vanity config: ")
+			}
+		}
 		switch {
 		case e.VCS != "":
 			// Already filled in.
-		case strings.HasPrefix(e.Repo, "https://bitbucket.org/"):
-			e.VCS = "hg"
-		default:
+			if e.VCS != "bzr" && e.VCS != "git" && e.VCS != "hg" && e.VCS != "svn" {
+				return nil, fmt.Errorf("configuration for %v: unknown VCS %s", path, e.VCS)
+			}
+		case strings.HasPrefix(e.Repo, "https://github.com/"):
 			e.VCS = "git"
+		default:
+			return nil, fmt.Errorf("configuration for %v: cannot infer VCS from %s", path, e.Repo)
 		}
 	}
 	return h, nil
