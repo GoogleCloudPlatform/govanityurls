@@ -21,7 +21,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 	"strings"
 
 	"google.golang.org/appengine"
@@ -74,15 +73,4 @@ func handle(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-var vanityTmpl, _ = template.New("vanity").Parse(`<!DOCTYPE html>
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<meta name="go-import" content="{{.Import}} git {{.Repo}}">
-<meta name="go-source" content="{{.Import}} {{.Display}}">
-<meta http-equiv="refresh" content="0; url=https://godoc.org/{{.Import}}">
-</head>
-<body>
-Nothing to see here; <a href="https://godoc.org/{{.Import}}">see the package on godoc</a>.
-</body>
-</html>`)
+var vanityTmpl, _ = template.ParseFiles("./templates/vanity.html")
