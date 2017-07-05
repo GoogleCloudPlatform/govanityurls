@@ -34,53 +34,65 @@ func TestHandler(t *testing.T) {
 	}{
 		{
 			name: "explicit display",
-			config: "/portmidi:\n" +
-				"  repo: https://github.com/rakyll/portmidi\n" +
-				"  display: https://github.com/rakyll/portmidi _ _\n",
+			config: "host: example.com\n" +
+				"paths:\n" +
+				"  /portmidi:\n" +
+				"    repo: https://github.com/rakyll/portmidi\n" +
+				"    display: https://github.com/rakyll/portmidi _ _\n",
 			path:     "/portmidi",
 			goImport: "example.com/portmidi git https://github.com/rakyll/portmidi",
 			goSource: "example.com/portmidi https://github.com/rakyll/portmidi _ _",
 		},
 		{
 			name: "display GitHub inference",
-			config: "/portmidi:\n" +
-				"  repo: https://github.com/rakyll/portmidi\n",
+			config: "host: example.com\n" +
+				"paths:\n" +
+				"  /portmidi:\n" +
+				"    repo: https://github.com/rakyll/portmidi\n",
 			path:     "/portmidi",
 			goImport: "example.com/portmidi git https://github.com/rakyll/portmidi",
 			goSource: "example.com/portmidi https://github.com/rakyll/portmidi https://github.com/rakyll/portmidi/tree/master{/dir} https://github.com/rakyll/portmidi/blob/master{/dir}/{file}#L{line}",
 		},
 		{
 			name: "Bitbucket Mercurial",
-			config: "/gopdf:\n" +
-				"  repo: https://bitbucket.org/zombiezen/gopdf\n" +
-				"  vcs: hg\n",
+			config: "host: example.com\n" +
+				"paths:\n" +
+				"  /gopdf:\n" +
+				"    repo: https://bitbucket.org/zombiezen/gopdf\n" +
+				"    vcs: hg\n",
 			path:     "/gopdf",
 			goImport: "example.com/gopdf hg https://bitbucket.org/zombiezen/gopdf",
 			goSource: "example.com/gopdf https://bitbucket.org/zombiezen/gopdf https://bitbucket.org/zombiezen/gopdf/src/default{/dir} https://bitbucket.org/zombiezen/gopdf/src/default{/dir}/{file}#{file}-{line}",
 		},
 		{
 			name: "Bitbucket Git",
-			config: "/mygit:\n" +
-				"  repo: https://bitbucket.org/zombiezen/mygit\n" +
-				"  vcs: git\n",
+			config: "host: example.com\n" +
+				"paths:\n" +
+				"  /mygit:\n" +
+				"    repo: https://bitbucket.org/zombiezen/mygit\n" +
+				"    vcs: git\n",
 			path:     "/mygit",
 			goImport: "example.com/mygit git https://bitbucket.org/zombiezen/mygit",
 			goSource: "example.com/mygit https://bitbucket.org/zombiezen/mygit https://bitbucket.org/zombiezen/mygit/src/default{/dir} https://bitbucket.org/zombiezen/mygit/src/default{/dir}/{file}#{file}-{line}",
 		},
 		{
 			name: "subpath",
-			config: "/portmidi:\n" +
-				"  repo: https://github.com/rakyll/portmidi\n" +
-				"  display: https://github.com/rakyll/portmidi _ _\n",
+			config: "host: example.com\n" +
+				"paths:\n" +
+				"  /portmidi:\n" +
+				"    repo: https://github.com/rakyll/portmidi\n" +
+				"    display: https://github.com/rakyll/portmidi _ _\n",
 			path:     "/portmidi/foo",
 			goImport: "example.com/portmidi git https://github.com/rakyll/portmidi",
 			goSource: "example.com/portmidi https://github.com/rakyll/portmidi _ _",
 		},
 		{
 			name: "subpath with trailing config slash",
-			config: "/portmidi/:\n" +
-				"  repo: https://github.com/rakyll/portmidi\n" +
-				"  display: https://github.com/rakyll/portmidi _ _\n",
+			config: "host: example.com\n" +
+				"paths:\n" +
+				"  /portmidi/:\n" +
+				"    repo: https://github.com/rakyll/portmidi\n" +
+				"    display: https://github.com/rakyll/portmidi _ _\n",
 			path:     "/portmidi/foo",
 			goImport: "example.com/portmidi git https://github.com/rakyll/portmidi",
 			goSource: "example.com/portmidi https://github.com/rakyll/portmidi _ _",
@@ -92,7 +104,6 @@ func TestHandler(t *testing.T) {
 			t.Errorf("%s: newHandler: %v", test.name, err)
 			continue
 		}
-		h.host = "example.com"
 		s := httptest.NewServer(h)
 		resp, err := http.Get(s.URL + test.path)
 		if err != nil {
@@ -121,11 +132,13 @@ func TestHandler(t *testing.T) {
 
 func TestBadConfigs(t *testing.T) {
 	badConfigs := []string{
-		"/missingvcs:\n" +
-			"  repo: https://bitbucket.org/zombiezen/gopdf\n",
-		"/unknownvcs:\n" +
-			"  repo: https://bitbucket.org/zombiezen/gopdf\n" +
-			"  vcs: xyzzy\n",
+		"paths:\n" +
+			"  /missingvcs:\n" +
+			"    repo: https://bitbucket.org/zombiezen/gopdf\n",
+		"paths:\n" +
+			"  /unknownvcs:\n" +
+			"    repo: https://bitbucket.org/zombiezen/gopdf\n" +
+			"    vcs: xyzzy\n",
 	}
 	for _, config := range badConfigs {
 		_, err := newHandler([]byte(config))
