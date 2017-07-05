@@ -19,6 +19,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"sort"
 	"testing"
 )
 
@@ -65,6 +66,24 @@ func TestHandler(t *testing.T) {
 			path:     "/mygit",
 			goImport: "example.com/mygit git https://bitbucket.org/zombiezen/mygit",
 			goSource: "example.com/mygit https://bitbucket.org/zombiezen/mygit https://bitbucket.org/zombiezen/mygit/src/default{/dir} https://bitbucket.org/zombiezen/mygit/src/default{/dir}/{file}#{file}-{line}",
+		},
+		{
+			name: "subpath",
+			config: "/portmidi:\n" +
+				"  repo: https://github.com/rakyll/portmidi\n" +
+				"  display: https://github.com/rakyll/portmidi _ _\n",
+			path:     "/portmidi/foo",
+			goImport: "example.com/portmidi git https://github.com/rakyll/portmidi",
+			goSource: "example.com/portmidi https://github.com/rakyll/portmidi _ _",
+		},
+		{
+			name: "subpath with trailing config slash",
+			config: "/portmidi/:\n" +
+				"  repo: https://github.com/rakyll/portmidi\n" +
+				"  display: https://github.com/rakyll/portmidi _ _\n",
+			path:     "/portmidi/foo",
+			goImport: "example.com/portmidi git https://github.com/rakyll/portmidi",
+			goSource: "example.com/portmidi https://github.com/rakyll/portmidi _ _",
 		},
 	}
 	for _, test := range tests {
@@ -131,4 +150,67 @@ func findMeta(data []byte, name string) string {
 		return ""
 	}
 	return string(content[:j])
+}
+
+func TestPathConfigSetFind(t *testing.T) {
+	tests := []struct {
+		paths   []string
+		query   string
+		want    string
+		subpath string
+	}{
+		{
+			paths: []string{"/portmidi"},
+			query: "/portmidi",
+			want:  "/portmidi",
+		},
+		{
+			paths: []string{"/portmidi"},
+			query: "/portmidi/",
+			want:  "/portmidi",
+		},
+		{
+			paths: []string{"/portmidi"},
+			query: "/foo",
+			want:  "",
+		},
+		{
+			paths: []string{"/portmidi"},
+			query: "/zzz",
+			want:  "",
+		},
+		{
+			paths: []string{"/abc", "/portmidi", "/xyz"},
+			query: "/portmidi",
+			want:  "/portmidi",
+		},
+		{
+			paths:   []string{"/abc", "/portmidi", "/xyz"},
+			query:   "/portmidi/foo",
+			want:    "/portmidi",
+			subpath: "foo",
+		},
+	}
+	emptyToNil := func(s string) string {
+		if s == "" {
+			return "<nil>"
+		}
+		return s
+	}
+	for _, test := range tests {
+		pset := make(pathConfigSet, len(test.paths))
+		for i := range test.paths {
+			pset[i].path = test.paths[i]
+		}
+		sort.Sort(pset)
+		pc, subpath := pset.find(test.query)
+		var got string
+		if pc != nil {
+			got = pc.path
+		}
+		if got != test.want || subpath != test.subpath {
+			t.Errorf("pathConfigSet(%v).find(%q) = %v, %v; want %v, %v",
+				test.paths, test.query, emptyToNil(got), subpath, emptyToNil(test.want), test.subpath)
+		}
+	}
 }
