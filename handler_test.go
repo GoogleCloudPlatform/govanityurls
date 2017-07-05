@@ -66,6 +66,9 @@ func TestHandler(t *testing.T) {
 		data, err := ioutil.ReadAll(resp.Body)
 		resp.Body.Close()
 		s.Close()
+		if resp.StatusCode != http.StatusOK {
+			t.Errorf("%s: status code = %s; want 200 OK", test.name, resp.Status)
+		}
 		if err != nil {
 			t.Errorf("%s: ioutil.ReadAll: %v", test.name, err)
 			continue
