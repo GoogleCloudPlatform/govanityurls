@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//+build !appengine
+//+build appengine
 
 package main
 
@@ -20,14 +20,12 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
+
+	"google.golang.org/appengine"
 )
 
 func main() {
-	if len(os.Args) != 2 {
-		log.Fatal("usage: govanityurls CONFIG")
-	}
-	vanity, err := ioutil.ReadFile(os.Args[1])
+	vanity, err := ioutil.ReadFile("./vanity.yaml")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -36,11 +34,9 @@ func main() {
 		log.Fatal(err)
 	}
 	http.Handle("/", h)
-	if err := http.ListenAndServe(":8080", nil); err != nil {
-		log.Fatal(err)
-	}
+	appengine.Main()
 }
 
 func requestHost(r *http.Request) string {
-	return r.Host
+	return appengine.DefaultVersionHostname(appengine.NewContext(r))
 }
