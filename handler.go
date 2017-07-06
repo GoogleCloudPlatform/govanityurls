@@ -47,11 +47,6 @@ func newHandler(config []byte) (*handler, error) {
 		case strings.HasPrefix(e.Repo, "https://bitbucket.org"):
 			e.Display = fmt.Sprintf("%v %v/src/default{/dir} %v/src/default{/dir}/{file}#{file}-{line}", e.Repo, e.Repo, e.Repo)
 		}
-		if e.VCS == "" {
-			if !strings.HasPrefix(e.Repo, "https://github.com/") {
-				return nil, fmt.Errorf("read vanity config: ")
-			}
-		}
 		switch {
 		case e.VCS != "":
 			// Already filled in.
