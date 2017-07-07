@@ -19,33 +19,48 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"sort"
 	"strings"
 
 	"gopkg.in/yaml.v2"
 )
 
 type handler struct {
-	host string
-	m    map[string]*struct {
+	host  string
+	paths pathConfigSet
+}
+
+type pathConfig struct {
+	path    string
+	repo    string
+	display string
+	vcs     string
+}
+
+func newHandler(config []byte) (*handler, error) {
+	var m map[string]struct {
 		Repo    string `yaml:"repo,omitempty"`
 		Display string `yaml:"display,omitempty"`
 		VCS     string `yaml:"vcs,omitempty"`
 	}
-}
-
-func newHandler(config []byte) (*handler, error) {
-	h := new(handler)
-	if err := yaml.Unmarshal(config, &h.m); err != nil {
+	if err := yaml.Unmarshal(config, &m); err != nil {
 		return nil, err
 	}
-	for path, e := range h.m {
+	h := new(handler)
+	for path, e := range m {
+		pc := pathConfig{
+			path:    strings.TrimSuffix(path, "/"),
+			repo:    e.Repo,
+			display: e.Display,
+			vcs:     e.VCS,
+		}
 		switch {
 		case e.Display != "":
 			// Already filled in.
 		case strings.HasPrefix(e.Repo, "https://github.com/"):
-			e.Display = fmt.Sprintf("%v %v/tree/master{/dir} %v/blob/master{/dir}/{file}#L{line}", e.Repo, e.Repo, e.Repo)
+			pc.display = fmt.Sprintf("%v %v/tree/master{/dir} %v/blob/master{/dir}/{file}#L{line}", e.Repo, e.Repo, e.Repo)
 		case strings.HasPrefix(e.Repo, "https://bitbucket.org"):
-			e.Display = fmt.Sprintf("%v %v/src/default{/dir} %v/src/default{/dir}/{file}#{file}-{line}", e.Repo, e.Repo, e.Repo)
+			pc.display = fmt.Sprintf("%v %v/src/default{/dir} %v/src/default{/dir}/{file}#{file}-{line}", e.Repo, e.Repo, e.Repo)
 		}
 		switch {
 		case e.VCS != "":
@@ -54,18 +69,20 @@ func newHandler(config []byte) (*handler, error) {
 				return nil, fmt.Errorf("configuration for %v: unknown VCS %s", path, e.VCS)
 			}
 		case strings.HasPrefix(e.Repo, "https://github.com/"):
-			e.VCS = "git"
+			pc.vcs = "git"
 		default:
 			return nil, fmt.Errorf("configuration for %v: cannot infer VCS from %s", path, e.Repo)
 		}
+		h.paths = append(h.paths, pc)
 	}
+	sort.Sort(h.paths)
 	return h, nil
 }
 
 func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	current := r.URL.Path
-	p, ok := h.m[current]
-	if !ok {
+	pc, _ := h.paths.find(current)
+	if pc == nil {
 		http.NotFound(w, r)
 		return
 	}
@@ -80,10 +97,10 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		Display string
 		VCS     string
 	}{
-		Import:  host + current,
-		Repo:    p.Repo,
-		Display: p.Display,
-		VCS:     p.VCS,
+		Import:  host + pc.path,
+		Repo:    pc.repo,
+		Display: pc.display,
+		VCS:     pc.vcs,
 	}); err != nil {
 		http.Error(w, "cannot render the page", http.StatusInternalServerError)
 	}
@@ -101,3 +118,30 @@ var vanityTmpl = template.Must(template.New("vanity").Parse(`<!DOCTYPE html>
 Nothing to see here; <a href="https://godoc.org/{{.Import}}">see the package on godoc</a>.
 </body>
 </html>`))
+
+type pathConfigSet []pathConfig
+
+func (pset pathConfigSet) Len() int {
+	return len(pset)
+}
+
+func (pset pathConfigSet) Less(i, j int) bool {
+	return pset[i].path < pset[j].path
+}
+
+func (pset pathConfigSet) Swap(i, j int) {
+	pset[i], pset[j] = pset[j], pset[i]
+}
+
+func (pset pathConfigSet) find(path string) (pc *pathConfig, subpath string) {
+	i := sort.Search(len(pset), func(i int) bool {
+		return pset[i].path >= path
+	})
+	if i < len(pset) && pset[i].path == path {
+		return &pset[i], ""
+	}
+	if i > 0 && strings.HasPrefix(path, pset[i-1].path+"/") {
+		return &pset[i-1], path[len(pset[i-1].path)+1:]
+	}
+	return nil, ""
+}
