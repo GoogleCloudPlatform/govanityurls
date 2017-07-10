@@ -24,10 +24,16 @@ import (
 )
 
 func main() {
-	if len(os.Args) != 2 {
-		log.Fatal("usage: govanityurls CONFIG")
+	var configPath string
+	switch len(os.Args) {
+	case 1:
+		configPath = "vanity.yaml"
+	case 2:
+		configPath = os.Args[1]
+	default:
+		log.Fatal("usage: govanityurls [CONFIG]")
 	}
-	vanity, err := ioutil.ReadFile(os.Args[1])
+	vanity, err := ioutil.ReadFile(configPath)
 	if err != nil {
 		log.Fatal(err)
 	}
