@@ -38,16 +38,19 @@ type pathConfig struct {
 }
 
 func newHandler(config []byte) (*handler, error) {
-	var m map[string]struct {
-		Repo    string `yaml:"repo,omitempty"`
-		Display string `yaml:"display,omitempty"`
-		VCS     string `yaml:"vcs,omitempty"`
+	var parsed struct {
+		Host  string `yaml:"host,omitempty"`
+		Paths map[string]struct {
+			Repo    string `yaml:"repo,omitempty"`
+			Display string `yaml:"display,omitempty"`
+			VCS     string `yaml:"vcs,omitempty"`
+		} `yaml:"paths,omitempty"`
 	}
-	if err := yaml.Unmarshal(config, &m); err != nil {
+	if err := yaml.Unmarshal(config, &parsed); err != nil {
 		return nil, err
 	}
-	h := new(handler)
-	for path, e := range m {
+	h := &handler{host: parsed.Host}
+	for path, e := range parsed.Paths {
 		pc := pathConfig{
 			path:    strings.TrimSuffix(path, "/"),
 			repo:    e.Repo,
@@ -89,7 +92,7 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	host := h.host
 	if host == "" {
-		host = requestHost(r)
+		host = defaultHost(r)
 	}
 	if err := vanityTmpl.Execute(w, struct {
 		Import  string

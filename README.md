@@ -23,8 +23,9 @@ Edit `vanity.yaml` to add any number of git repos. E.g., `customdomain.com/portm
 serve the [https://github.com/rakyll/portmidi](https://github.com/rakyll/portmidi) repo.
 
 ```
-/portmidi:
-  repo: https://github.com/rakyll/portmidi
+paths:
+  /portmidi:
+    repo: https://github.com/rakyll/portmidi
 ```
 
 You can add as many rules as you wish.

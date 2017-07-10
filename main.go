@@ -41,6 +41,6 @@ func main() {
 	}
 }
 
-func requestHost(r *http.Request) string {
+func defaultHost(r *http.Request) string {
 	return r.Host
 }

@@ -37,6 +37,6 @@ func main() {
 	appengine.Main()
 }
 
-func requestHost(r *http.Request) string {
+func defaultHost(r *http.Request) string {
 	return appengine.DefaultVersionHostname(appengine.NewContext(r))
 }
