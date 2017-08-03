@@ -85,22 +85,22 @@ func newHandler(config []byte) (*handler, error) {
 func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	current := r.URL.Path
 	pc, _ := h.paths.find(current)
+	if pc == nil && current == "/" {
+		h.serveIndex(w, r)
+		return
+	}
 	if pc == nil {
 		http.NotFound(w, r)
 		return
 	}
 
-	host := h.host
-	if host == "" {
-		host = defaultHost(r)
-	}
 	if err := vanityTmpl.Execute(w, struct {
 		Import  string
 		Repo    string
 		Display string
 		VCS     string
 	}{
-		Import:  host + pc.path,
+		Import:  h.Host(r) + pc.path,
 		Repo:    pc.repo,
 		Display: pc.display,
 		VCS:     pc.vcs,
@@ -108,6 +108,40 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "cannot render the page", http.StatusInternalServerError)
 	}
 }
+
+func (h *handler) serveIndex(w http.ResponseWriter, r *http.Request) {
+	host := h.Host(r)
+	handlers := make([]string, len(h.paths))
+	for i, h := range h.paths {
+		handlers[i] = host + h.path
+	}
+	if err := indexTmpl.Execute(w, struct {
+		Host     string
+		Handlers []string
+	}{
+		Host:     host,
+		Handlers: handlers,
+	}); err != nil {
+		http.Error(w, "cannot render the page", http.StatusInternalServerError)
+	}
+}
+
+func (h *handler) Host(r *http.Request) string {
+	host := h.host
+	if host == "" {
+		host = defaultHost(r)
+	}
+	return host
+}
+
+var indexTmpl = template.Must(template.New("index").Parse(`<!DOCTYPE html>
+<html>
+<h1>{{.Host}}</h1>
+<ul>
+{{range .Handlers}}<li><a href="https://godoc.org/{{.}}">{{.}}</a></li>{{end}}
+</ul>
+</html>
+`))
 
 var vanityTmpl = template.Must(template.New("vanity").Parse(`<!DOCTYPE html>
 <html>
