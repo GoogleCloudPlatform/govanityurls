@@ -42,7 +42,6 @@ func TestHandler(t *testing.T) {
 			path:     "/portmidi",
 			goImport: "example.com/portmidi git https://github.com/rakyll/portmidi",
 			goSource: "example.com/portmidi https://github.com/rakyll/portmidi _ _",
-			link: "godoc.org/"
 		},
 		{
 			name: "display GitHub inference",
