@@ -97,6 +97,43 @@ func TestHandler(t *testing.T) {
 			goImport: "example.com/portmidi git https://github.com/rakyll/portmidi",
 			goSource: "example.com/portmidi https://github.com/rakyll/portmidi _ _",
 		},
+		{
+			name: "path rules",
+			config: "host: example.com\n" +
+				"pathrules:\n" +
+				"  /{name}:\n" +
+				"    repo: https://github.com/rakyll/{name}\n" +
+				"    display: https://github.com/rakyll/{name} _ _\n",
+			path:     "/portmidi",
+			goImport: "example.com/portmidi git https://github.com/rakyll/portmidi",
+			goSource: "example.com/portmidi https://github.com/rakyll/portmidi _ _",
+		},
+		{
+			name: "path rules with subpath",
+			config: "host: example.com\n" +
+				"pathrules:\n" +
+				"  /{name}:\n" +
+				"    repo: https://github.com/rakyll/{name}\n" +
+				"    display: https://github.com/rakyll/{name} _ _\n",
+			path:     "/portmidi/foo",
+			goImport: "example.com/portmidi git https://github.com/rakyll/portmidi",
+			goSource: "example.com/portmidi https://github.com/rakyll/portmidi _ _",
+		},
+		{
+			name: "path rules come last",
+			config: "host: example.com\n" +
+				"paths:\n" +
+				"  /portmidi/:\n" +
+				"    repo: https://github.com/rakyll/modo\n" +
+				"    display: https://github.com/rakyll/modo_ _\n" +
+				"pathrules:\n" +
+				"  /{name}:\n" +
+				"    repo: https://github.com/rakyll/{name}\n" +
+				"    display: https://github.com/rakyll/{name} _ _\n",
+			path:     "/portmidi",
+			goImport: "example.com/portmidi git https://github.com/rakyll/modo",
+			goSource: "example.com/portmidi https://github.com/rakyll/modo_ _",
+		},
 	}
 	for _, test := range tests {
 		h, err := newHandler([]byte(test.config))
@@ -224,6 +261,83 @@ func TestPathConfigSetFind(t *testing.T) {
 		if got != test.want || subpath != test.subpath {
 			t.Errorf("pathConfigSet(%v).find(%q) = %v, %v; want %v, %v",
 				test.paths, test.query, emptyToNil(got), subpath, emptyToNil(test.want), test.subpath)
+		}
+	}
+}
+
+func TestFindStructure(t *testing.T) {
+	tests := []struct {
+		name            string
+		match           string
+		wantPrefix      string
+		wantPlaceholder string
+		wantSuffix      string
+		wantErr         bool
+	}{
+		{
+			name:    "empty",
+			wantErr: true,
+		},
+		{
+			name:            "empty prefix and suffix",
+			match:           "{name}",
+			wantPlaceholder: "{name}",
+		},
+		{
+			name:    "empty placeholder",
+			match:   "{}",
+			wantErr: true,
+		},
+		{
+			name:    "no placeholder, but text",
+			match:   "nothing",
+			wantErr: true,
+		},
+		{
+			name:    "not terminated placeholder",
+			match:   "{open",
+			wantErr: true,
+		},
+		{
+			name:    "multiple placeholders",
+			match:   "{one}two{three}",
+			wantErr: true,
+		},
+		{
+			name:            "have prefix and no suffix",
+			match:           "/prefix/{name}",
+			wantPrefix:      "/prefix/",
+			wantPlaceholder: "{name}",
+		},
+		{
+			name:            "have prefix and suffix",
+			match:           "/prefix/{name}.suffix",
+			wantPrefix:      "/prefix/",
+			wantPlaceholder: "{name}",
+			wantSuffix:      ".suffix",
+		},
+		{
+			name:            "have single character prefix, placeholder and suffix",
+			match:           "p{n}s",
+			wantPrefix:      "p",
+			wantPlaceholder: "{n}",
+			wantSuffix:      "s",
+		},
+	}
+	for _, tt := range tests {
+		gotPrefix, gotPlaceholder, gotSuffix, err := findStructure(tt.match)
+		if (err != nil) != tt.wantErr {
+			t.Errorf("%s: findStructure(%v) error = %v, wantErr %v", tt.name, tt.match, err, tt.wantErr)
+			return
+		}
+		if gotPrefix != tt.wantPrefix {
+			t.Errorf("%s: findStructure(%v) gotPrefix = %v, want %v", tt.name, tt.match, gotPrefix, tt.wantPrefix)
+		}
+		if gotPlaceholder != tt.wantPlaceholder {
+			t.Errorf("%s: findStructure(%v) gotPlaceholder = %v, want %v", tt.name, tt.match, gotPlaceholder, tt.wantPlaceholder)
+		}
+		if gotSuffix != tt.wantSuffix {
+			t.Errorf("%s: findStructure(%v) gotSuffix = %v, want %v", tt.name, tt.match, gotSuffix, tt.wantSuffix)
 		}
 	}
 }
