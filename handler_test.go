@@ -139,6 +139,10 @@ func TestBadConfigs(t *testing.T) {
 			"  /unknownvcs:\n" +
 			"    repo: https://bitbucket.org/zombiezen/gopdf\n" +
 			"    vcs: xyzzy\n",
+		"cache_age: -1\n" +
+			"paths:\n" +
+			"  /portmidi:\n" +
+			"    repo: https://github.com/rakyll/portmidi\n",
 	}
 	for _, config := range badConfigs {
 		_, err := newHandler([]byte(config))
@@ -224,6 +228,49 @@ func TestPathConfigSetFind(t *testing.T) {
 		if got != test.want || subpath != test.subpath {
 			t.Errorf("pathConfigSet(%v).find(%q) = %v, %v; want %v, %v",
 				test.paths, test.query, emptyToNil(got), subpath, emptyToNil(test.want), test.subpath)
+		}
+	}
+}
+
+func TestCacheHeader(t *testing.T) {
+	tests := []struct {
+		name         string
+		config       string
+		cacheControl string
+		configErr    bool
+	}{
+		{
+			name:         "default",
+			cacheControl: "public, max-age=86400",
+		},
+		{
+			name:         "specify time",
+			config:       "cache_age: 60\n",
+			cacheControl: "public, max-age=60",
+		},
+		{
+			name:         "zero",
+			config:       "cache_age: 0\n",
+			cacheControl: "public, max-age=0",
+		},
+	}
+	for _, test := range tests {
+		h, err := newHandler([]byte("paths:\n  /portmidi:\n    repo: https://github.com/rakyll/portmidi\n" +
+			test.config))
+		if err != nil {
+			t.Errorf("%s: newHandler: %v", test.name, err)
+			continue
+		}
+		s := httptest.NewServer(h)
+		resp, err := http.Get(s.URL + "/portmidi")
+		if err != nil {
+			t.Errorf("%s: http.Get: %v", test.name, err)
+			continue
+		}
+		resp.Body.Close()
+		got := resp.Header.Get("Cache-Control")
+		if got != test.cacheControl {
+			t.Errorf("%s: Cache-Control header = %q; want %q", test.name, got, test.cacheControl)
 		}
 	}
 }
