@@ -84,7 +84,7 @@ func newHandler(config []byte) (*handler, error) {
 
 func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	current := r.URL.Path
-	pc, _ := h.paths.find(current)
+	pc, subpath := h.paths.find(current)
 	if pc == nil && current == "/" {
 		h.serveIndex(w, r)
 		return
@@ -96,11 +96,13 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	if err := vanityTmpl.Execute(w, struct {
 		Import  string
+		Subpath string
 		Repo    string
 		Display string
 		VCS     string
 	}{
 		Import:  h.Host(r) + pc.path,
+		Subpath: subpath,
 		Repo:    pc.repo,
 		Display: pc.display,
 		VCS:     pc.vcs,
@@ -149,10 +151,10 @@ var vanityTmpl = template.Must(template.New("vanity").Parse(`<!DOCTYPE html>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <meta name="go-import" content="{{.Import}} {{.VCS}} {{.Repo}}">
 <meta name="go-source" content="{{.Import}} {{.Display}}">
-<meta http-equiv="refresh" content="0; url=https://godoc.org/{{.Import}}">
+<meta http-equiv="refresh" content="0; url=https://godoc.org/{{.Import}}/{{.Subpath}}">
 </head>
 <body>
-Nothing to see here; <a href="https://godoc.org/{{.Import}}">see the package on godoc</a>.
+Nothing to see here; <a href="https://godoc.org/{{.Import}}/{{.Subpath}}">see the package on godoc</a>.
 </body>
 </html>`))
 
