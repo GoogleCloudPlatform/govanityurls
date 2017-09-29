@@ -16,6 +16,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"html/template"
 	"net/http"
@@ -26,8 +27,9 @@ import (
 )
 
 type handler struct {
-	host  string
-	paths pathConfigSet
+	host         string
+	cacheControl string
+	paths        pathConfigSet
 }
 
 type pathConfig struct {
@@ -39,8 +41,9 @@ type pathConfig struct {
 
 func newHandler(config []byte) (*handler, error) {
 	var parsed struct {
-		Host  string `yaml:"host,omitempty"`
-		Paths map[string]struct {
+		Host     string `yaml:"host,omitempty"`
+		CacheAge *int64 `yaml:"cache_max_age,omitempty"`
+		Paths    map[string]struct {
 			Repo    string `yaml:"repo,omitempty"`
 			Display string `yaml:"display,omitempty"`
 			VCS     string `yaml:"vcs,omitempty"`
@@ -50,6 +53,14 @@ func newHandler(config []byte) (*handler, error) {
 		return nil, err
 	}
 	h := &handler{host: parsed.Host}
+	cacheAge := int64(86400) // 24 hpurs (in seconds)
+	if parsed.CacheAge != nil {
+		cacheAge = *parsed.CacheAge
+		if cacheAge < 0 {
+			return nil, errors.New("cache_max_age is negative")
+		}
+	}
+	h.cacheControl = fmt.Sprintf("public, max-age=%d", cacheAge)
 	for path, e := range parsed.Paths {
 		pc := pathConfig{
 			path:    strings.TrimSuffix(path, "/"),
@@ -94,6 +105,7 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.Header().Set("Cache-Control", h.cacheControl)
 	if err := vanityTmpl.Execute(w, struct {
 		Import  string
 		Subpath string
