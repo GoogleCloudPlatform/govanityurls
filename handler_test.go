@@ -139,7 +139,7 @@ func TestBadConfigs(t *testing.T) {
 			"  /unknownvcs:\n" +
 			"    repo: https://bitbucket.org/zombiezen/gopdf\n" +
 			"    vcs: xyzzy\n",
-		"cache_age: -1\n" +
+		"cache_max_age: -1\n" +
 			"paths:\n" +
 			"  /portmidi:\n" +
 			"    repo: https://github.com/rakyll/portmidi\n",
@@ -237,7 +237,6 @@ func TestCacheHeader(t *testing.T) {
 		name         string
 		config       string
 		cacheControl string
-		configErr    bool
 	}{
 		{
 			name:         "default",
@@ -245,12 +244,12 @@ func TestCacheHeader(t *testing.T) {
 		},
 		{
 			name:         "specify time",
-			config:       "cache_age: 60\n",
+			config:       "cache_max_age: 60\n",
 			cacheControl: "public, max-age=60",
 		},
 		{
 			name:         "zero",
-			config:       "cache_age: 0\n",
+			config:       "cache_max_age: 0\n",
 			cacheControl: "public, max-age=0",
 		},
 	}

@@ -42,7 +42,7 @@ type pathConfig struct {
 func newHandler(config []byte) (*handler, error) {
 	var parsed struct {
 		Host     string `yaml:"host,omitempty"`
-		CacheAge *int64 `yaml:"cache_age,omitempty"`
+		CacheAge *int64 `yaml:"cache_max_age,omitempty"`
 		Paths    map[string]struct {
 			Repo    string `yaml:"repo,omitempty"`
 			Display string `yaml:"display,omitempty"`
@@ -57,7 +57,7 @@ func newHandler(config []byte) (*handler, error) {
 	if parsed.CacheAge != nil {
 		cacheAge = *parsed.CacheAge
 		if cacheAge < 0 {
-			return nil, errors.New("cache_age is negative")
+			return nil, errors.New("cache_max_age is negative")
 		}
 	}
 	h.cacheControl = fmt.Sprintf("public, max-age=%d", cacheAge)
