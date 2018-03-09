@@ -194,5 +194,25 @@ func (pset pathConfigSet) find(path string) (pc *pathConfig, subpath string) {
 	if i > 0 && strings.HasPrefix(path, pset[i-1].path+"/") {
 		return &pset[i-1], path[len(pset[i-1].path)+1:]
 	}
-	return nil, ""
+
+	// Otherwise now look for the shortest prefix pathConfig
+	// For example:
+	//  * Given pathConfigs {"/y", "/example/helloworld", "/"}
+	//  * Query "/x" should return "/"
+	//  * Query "/example/helloworld/foo" should return "/example/helloworld"
+	shortestWeight := len(path)
+	var shortestPrefixConfig *pathConfig
+	for i, ps := range pset {
+		if len(ps.path) >= len(path) {
+			// We previously didn't find the path by search, so any
+			// route with equal or greater length is NOT a match.
+			continue
+		}
+		rest := strings.TrimPrefix(path, ps.path)
+		if len(rest) < shortestWeight {
+			shortestWeight = len(rest)
+			shortestPrefixConfig = &pset[i]
+		}
+	}
+	return shortestPrefixConfig, ""
 }

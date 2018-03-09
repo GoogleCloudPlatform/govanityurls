@@ -207,6 +207,43 @@ func TestPathConfigSetFind(t *testing.T) {
 			want:    "/portmidi",
 			subpath: "foo",
 		},
+		{
+			paths:   []string{"/example/helloworld", "/", "/y", "/foo"},
+			query:   "/x",
+			want:    "/",
+			subpath: "",
+		},
+		{
+			paths:   []string{"/example/helloworld", "/", "/y", "/foo"},
+			query:   "/",
+			want:    "/",
+			subpath: "",
+		},
+		{
+			paths: []string{"/example/helloworld", "/", "/y", "/foo"},
+			query: "/example",
+			want:  "/",
+		},
+		{
+			paths: []string{"/example/helloworld", "/", "/y", "/foo"},
+			query: "/example/foo",
+			want:  "/",
+		},
+		{
+			paths: []string{"/example/helloworld", "/", "/y", "/foo"},
+			query: "/y",
+			want:  "/y",
+		},
+		{
+			paths: []string{"/example/helloworld", "/", "/y", "/foo"},
+			query: "/x/y/",
+			want:  "/",
+		},
+		{
+			paths: []string{"/example/helloworld", "/y", "/foo"},
+			query: "/x",
+			want:  "",
+		},
 	}
 	emptyToNil := func(s string) string {
 		if s == "" {
