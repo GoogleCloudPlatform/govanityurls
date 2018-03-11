@@ -17,19 +17,24 @@
 package main
 
 import (
+	"flag"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 )
 
 func main() {
+	var (
+		flListenAddr = flag.String("listen", ":8080", "HTTP server address (defaults to :8080)")
+	)
+	flag.Parse()
+
 	var configPath string
-	switch len(os.Args) {
-	case 1:
+	switch len(flag.Args()) {
+	case 0:
 		configPath = "vanity.yaml"
-	case 2:
-		configPath = os.Args[1]
+	case 1:
+		configPath = flag.Args()[0]
 	default:
 		log.Fatal("usage: govanityurls [CONFIG]")
 	}
@@ -42,7 +47,7 @@ func main() {
 		log.Fatal(err)
 	}
 	http.Handle("/", h)
-	if err := http.ListenAndServe(":8080", nil); err != nil {
+	if err := http.ListenAndServe(*flListenAddr, nil); err != nil {
 		log.Fatal(err)
 	}
 }
