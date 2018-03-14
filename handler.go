@@ -197,11 +197,11 @@ func (pset pathConfigSet) find(path string) (pc *pathConfig, subpath string) {
 		return &pset[i-1], path[len(pset[i-1].path)+1:]
 	}
 
-	// Slow path, now looking for the closest match that's also a prefix i.e.
+	// Slow path, now looking for the longest prefix/shortest subpath i.e.
 	// e.g. given pset ["/", "/abc/", "/abc/def/", "/xyz"/]
-	//  * query "/abc/foo" returns "/abc/"
-	//  * query "/x" returns "/"
-	shortestWeight := len(path)
+	//  * query "/abc/foo" returns "/abc/" with a subpath of "foo"
+	//  * query "/x" returns "/" with a subpath of "x"
+	lenShortestSubpath := len(path)
 	var bestMatchConfig *pathConfig
 	for i, ps := range pset {
 		if len(ps.path) >= len(path) {
@@ -209,11 +209,12 @@ func (pset pathConfigSet) find(path string) (pc *pathConfig, subpath string) {
 			// route with equal or greater length is NOT a match.
 			continue
 		}
-		rest := strings.TrimPrefix(path, ps.path)
-		if len(rest) < shortestWeight {
-			shortestWeight = len(rest)
+		sSubpath := strings.TrimPrefix(path, ps.path)
+		if len(sSubpath) < lenShortestSubpath {
+			subpath = sSubpath
+			lenShortestSubpath = len(sSubpath)
 			bestMatchConfig = &pset[i]
 		}
 	}
-	return bestMatchConfig, ""
+	return bestMatchConfig, subpath
 }

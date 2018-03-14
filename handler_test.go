@@ -211,7 +211,7 @@ func TestPathConfigSetFind(t *testing.T) {
 			paths:   []string{"/example/helloworld", "/", "/y", "/foo"},
 			query:   "/x",
 			want:    "/",
-			subpath: "",
+			subpath: "x",
 		},
 		{
 			paths:   []string{"/example/helloworld", "/", "/y", "/foo"},
@@ -220,14 +220,16 @@ func TestPathConfigSetFind(t *testing.T) {
 			subpath: "",
 		},
 		{
-			paths: []string{"/example/helloworld", "/", "/y", "/foo"},
-			query: "/example",
-			want:  "/",
+			paths:   []string{"/example/helloworld", "/", "/y", "/foo"},
+			query:   "/example",
+			want:    "/",
+			subpath: "example",
 		},
 		{
-			paths: []string{"/example/helloworld", "/", "/y", "/foo"},
-			query: "/example/foo",
-			want:  "/",
+			paths:   []string{"/example/helloworld", "/", "/y", "/foo"},
+			query:   "/example/foo",
+			want:    "/",
+			subpath: "example/foo",
 		},
 		{
 			paths: []string{"/example/helloworld", "/", "/y", "/foo"},
@@ -238,6 +240,7 @@ func TestPathConfigSetFind(t *testing.T) {
 			paths: []string{"/example/helloworld", "/", "/y", "/foo"},
 			query: "/x/y/",
 			want:  "/",
+			subpath:  "x/y/",
 		},
 		{
 			paths: []string{"/example/helloworld", "/y", "/foo"},
