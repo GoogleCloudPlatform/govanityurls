@@ -185,6 +185,8 @@ func (pset pathConfigSet) Swap(i, j int) {
 }
 
 func (pset pathConfigSet) find(path string) (pc *pathConfig, subpath string) {
+	// Fast path with binary search to retrieve exact matches
+	// e.g. given pset ["/", "/abc", "/xyz"], path "/def" won't match.
 	i := sort.Search(len(pset), func(i int) bool {
 		return pset[i].path >= path
 	})
@@ -195,13 +197,12 @@ func (pset pathConfigSet) find(path string) (pc *pathConfig, subpath string) {
 		return &pset[i-1], path[len(pset[i-1].path)+1:]
 	}
 
-	// Otherwise now look for the shortest prefix pathConfig
-	// For example:
-	//  * Given pathConfigs {"/y", "/example/helloworld", "/"}
-	//  * Query "/x" should return "/"
-	//  * Query "/example/helloworld/foo" should return "/example/helloworld"
+	// Slow path, now looking for the closest match that's also a prefix i.e.
+	// e.g. given pset ["/", "/abc/", "/abc/def/", "/xyz"/]
+	//  * query "/abc/foo" returns "/abc/"
+	//  * query "/x" returns "/"
 	shortestWeight := len(path)
-	var shortestPrefixConfig *pathConfig
+	var bestMatchConfig *pathConfig
 	for i, ps := range pset {
 		if len(ps.path) >= len(path) {
 			// We previously didn't find the path by search, so any
@@ -211,8 +212,8 @@ func (pset pathConfigSet) find(path string) (pc *pathConfig, subpath string) {
 		rest := strings.TrimPrefix(path, ps.path)
 		if len(rest) < shortestWeight {
 			shortestWeight = len(rest)
-			shortestPrefixConfig = &pset[i]
+			bestMatchConfig = &pset[i]
 		}
 	}
-	return shortestPrefixConfig, ""
+	return bestMatchConfig, ""
 }
