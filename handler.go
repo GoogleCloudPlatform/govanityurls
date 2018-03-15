@@ -203,7 +203,12 @@ func (pset pathConfigSet) find(path string) (pc *pathConfig, subpath string) {
 	//  * query "/x" returns "/" with a subpath of "x"
 	lenShortestSubpath := len(path)
 	var bestMatchConfig *pathConfig
-	for i, ps := range pset {
+
+	// After binary search with the >= lexicographic comparison,
+	// nothing greater than i will be a prefix of path.
+	max := i
+	for i := 0; i < max; i++ {
+		ps := pset[i]
 		if len(ps.path) >= len(path) {
 			// We previously didn't find the path by search, so any
 			// route with equal or greater length is NOT a match.
