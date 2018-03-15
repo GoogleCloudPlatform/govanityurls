@@ -185,6 +185,8 @@ func (pset pathConfigSet) Swap(i, j int) {
 }
 
 func (pset pathConfigSet) find(path string) (pc *pathConfig, subpath string) {
+	// Fast path with binary search to retrieve exact matches
+	// e.g. given pset ["/", "/abc", "/xyz"], path "/def" won't match.
 	i := sort.Search(len(pset), func(i int) bool {
 		return pset[i].path >= path
 	})
@@ -194,5 +196,30 @@ func (pset pathConfigSet) find(path string) (pc *pathConfig, subpath string) {
 	if i > 0 && strings.HasPrefix(path, pset[i-1].path+"/") {
 		return &pset[i-1], path[len(pset[i-1].path)+1:]
 	}
-	return nil, ""
+
+	// Slow path, now looking for the longest prefix/shortest subpath i.e.
+	// e.g. given pset ["/", "/abc/", "/abc/def/", "/xyz"/]
+	//  * query "/abc/foo" returns "/abc/" with a subpath of "foo"
+	//  * query "/x" returns "/" with a subpath of "x"
+	lenShortestSubpath := len(path)
+	var bestMatchConfig *pathConfig
+
+	// After binary search with the >= lexicographic comparison,
+	// nothing greater than i will be a prefix of path.
+	max := i
+	for i := 0; i < max; i++ {
+		ps := pset[i]
+		if len(ps.path) >= len(path) {
+			// We previously didn't find the path by search, so any
+			// route with equal or greater length is NOT a match.
+			continue
+		}
+		sSubpath := strings.TrimPrefix(path, ps.path)
+		if len(sSubpath) < lenShortestSubpath {
+			subpath = sSubpath
+			lenShortestSubpath = len(sSubpath)
+			bestMatchConfig = &pset[i]
+		}
+	}
+	return bestMatchConfig, subpath
 }
