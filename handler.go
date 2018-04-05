@@ -39,7 +39,7 @@ type pathConfig struct {
 	vcs     string
 }
 
-func newHandler(config []byte, host string) (*handler, error) {
+func newHandler(config []byte) (*handler, error) {
 	var parsed struct {
 		Host     string `yaml:"host,omitempty"`
 		CacheAge *int64 `yaml:"cache_max_age,omitempty"`
@@ -52,11 +52,8 @@ func newHandler(config []byte, host string) (*handler, error) {
 	if err := yaml.Unmarshal(config, &parsed); err != nil {
 		return nil, err
 	}
-	var serverHost = parsed.Host
-	if host != "" {
-		serverHost = parsed.Host
-	}
-	h := &handler{host: serverHost}
+
+	h := &handler{host: parsed.Host}
 	cacheAge := int64(86400) // 24 hours (in seconds)
 	if parsed.CacheAge != nil {
 		cacheAge = *parsed.CacheAge

@@ -25,14 +25,11 @@ import (
 
 func main() {
 	var configPath string
-	var host string
 	switch len(os.Args) {
 	case 1:
 		configPath = "vanity.yaml"
 	case 2:
 		configPath = os.Args[1]
-	case 3:
-		host = os.Args[2]
 	default:
 		log.Fatal("usage: govanityurls [CONFIG] [host]")
 	}
@@ -40,7 +37,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	h, err := newHandler(vanity, host)
+	h, err := newHandler(vanity)
 	if err != nil {
 		log.Fatal(err)
 	}
