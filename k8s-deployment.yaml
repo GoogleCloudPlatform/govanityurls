@@ -9,7 +9,7 @@ data:
     paths:
       /trident:
         repo: http://git.inspur.com/iop-trident/trident.git
-
+        vcs: git
       /launchpad:
         repo: https://github.com/rakyll/launchpad
 
@@ -30,11 +30,12 @@ spec:
       - image: cwocwo/govanityurls:1.0.0
         imagePullPolicy: Always
         name: govanityurls
+        args: ["/etc/govanityurls/vanity.yaml"]
         ports:
         - containerPort: 8080
         volumeMounts:
         - name: config-map
-          mountPath: /
+          mountPath: /etc/govanityurls/
         livenessProbe:
           failureThreshold: 3
           initialDelaySeconds: 10
@@ -84,6 +85,6 @@ spec:
     http:
       paths:
       - path: /
-          backend:
-            serviceName: govanityurls-service
-            servicePort: 8080
+        backend:
+          serviceName: govanityurls-service
+          servicePort: 8080
