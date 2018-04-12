@@ -1,4 +1,4 @@
-host: icp.inspur.com
+host: iop.inspur.com
 
 paths:
   /portmidi:
