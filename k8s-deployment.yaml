@@ -1,0 +1,89 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: govanityurls-config
+data:
+  vanity.yaml: |
+    # vanity yaml
+    host: iop.inspur.com
+    paths:
+      /trident:
+        repo: http://git.inspur.com/iop-trident/trident.git
+
+      /launchpad:
+        repo: https://github.com/rakyll/launchpad
+
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: govanityurls-deployment
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: govanityurls
+    spec:
+      restartPolicy: Always
+      containers:
+      - image: cwocwo/govanityurls:1.0.0
+        imagePullPolicy: Always
+        name: govanityurls
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: config-map
+          mountPath: /
+        livenessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: 8080
+          timeoutSeconds: 2
+        readinessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: 8080
+          timeoutSeconds: 2
+      volumes:
+        - name: config-map
+          configMap:
+            name: govanityurls-config
+            items:
+              - key: vanity.yaml
+                path: vanity.yaml
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: govanityurls-service
+  labels:
+    app: govanityurls
+spec:
+  ports:
+  - port: 8080
+    targetPort: 8080
+  selector:
+    app: govanityurls
+
+---
+kind: Ingress
+apiVersion: extensions/v1beta1
+metadata:
+  name: govanityurls-ingress
+spec:
+  rules:
+  - host: iop.inspur.com
+    http:
+      paths:
+      - path: /
+          backend:
+            serviceName: govanityurls-service
+            servicePort: 8080
