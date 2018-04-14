@@ -14,7 +14,7 @@ after_success:
   ; fi`
 - docker build -f Dockerfile -t $REPO:$COMMIT .
 - docker tag $REPO:$COMMIT $REPO:$TAG
-- docker tag $REPO:$COMMIT $REPO:1.0.0
+- docker tag $REPO:$COMMIT $REPO:latest
 - docker images
 - docker push $REPO
 env:
