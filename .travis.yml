@@ -7,14 +7,14 @@ services:
 install:
 - go get gopkg.in/yaml.v2
 after_success:
-- CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build main.go
-- docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+- CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build
+- docker login -u $DOCKER_USER -p $DOCKER_PASS
 - export REPO=cwocwo/govanityurls
 - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH
   ; fi`
 - docker build -f Dockerfile -t $REPO:$COMMIT .
 - docker tag $REPO:$COMMIT $REPO:$TAG
-- docker tag $REPO:$COMMIT $REPO:travis-$TRAVIS_BUILD_NUMBER
+- docker tag $REPO:$COMMIT $REPO:1.0.0
 - docker images
 - docker push $REPO
 env:
