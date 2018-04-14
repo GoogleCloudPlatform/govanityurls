@@ -31,7 +31,7 @@ func main() {
 	case 2:
 		configPath = os.Args[1]
 	default:
-		log.Fatal("usage: govanityurls [CONFIG]")
+		log.Fatal("usage: govanityurls [CONFIG] [host]")
 	}
 	vanity, err := ioutil.ReadFile(configPath)
 	if err != nil {
