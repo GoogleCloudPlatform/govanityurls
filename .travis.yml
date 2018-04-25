@@ -1,5 +1,25 @@
-sudo: false
+sudo: required
 language: go
 go:
-- 1.6
 - 1.x
+services:
+- docker
+install:
+- go get gopkg.in/yaml.v2
+after_success:
+- CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build
+- docker login -u $DOCKER_USER -p $DOCKER_PASS
+- export REPO=cwocwo/govanityurls
+- export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH
+  ; fi`
+- docker build -f Dockerfile -t $REPO:$COMMIT .
+- docker tag $REPO:$COMMIT $REPO:$TAG
+- docker tag $REPO:$COMMIT $REPO:latest
+- docker images
+- docker push $REPO
+env:
+  global:
+  - COMMIT=${TRAVIS_COMMIT::8}
+  - secure: uRLaFzImSEoE1KV7NJbNWBn0iEPGZAch9XQ9KMOpPlHZ89ENanjP4Y3pXz8aPnjG+jfoFnxZjCEgTZkMfV92zStjHarZs6VSrhIxdw/q8GGveJE5bEG8BXFgsk248qs+xfhtntl68SCQ+jsOSAZbr9gLmYidmPZ3zppO5GsiFP1/A9Ne72+4wztLrWvckPWe0mA664Dub58Lm2pA2JreG3/Wqwp3fAA1ohURUgYrlNpFrMIWFRw5yF/kV0IiEs2Cxb/dM7e1+QDTLga3AMJHvtR3ik4je1J0j1RCfe/Am3OlirGG6GVFjK9SUQnzKCr/ZwQaoSqew1zCumxcpZg2F1LljuD/bLpBu9l91d1fTqhRSdQtzPwDfzBFdkn07zF65y+VAKXOd2MH8KvH3qtSDvuTnWdtGAuCMick/7Va4poRkmbq1Q6xBG9ju/xRFKSChykVEh1oQ7zFEKIt962rD/xu1zsT9K85qKIARIlxEgaAgIiZqHFxn73L05TWv7wyDfq+8MnB8ZJTdCMeK9S//fm4wwQhIH9PkBCF9Voa1pPrSNIFji9k0EKTdOSaLyBOrvb4NQNWso2HhYx8PkA+k8pxNgxpKr9eByi8vr7qqWSPfi6XcgiCHtLzZR78RG/gcQuCWn/ybNRj7qtE/t6meBPDxWWhObo4mQS5CRnDpcw=
+  - secure: xZIka6oGiL//WKt3YJ5y2z0bsLQr/RTyO0EpPytcZtZSLin+UEFXprzOx8A4wBl+JPmUWVQuPImmlK0Jg+WkuQboPcvqGLbDmUZ1wBX2DHTGk7KpBNbGfxeflVwMlOawJpkvCwhrIoI00Kgb8LqfZeh6NcgTxEJPECchNGXUL0PjP830gp+nqQ6pauOMnzKXM/a6oriWYyTbfPFxIk7cEhTtnVW4gRXf9Uq2kOBq/GychzaqGH/Nyf3PmdvTfNHDF6XXmLCPA243vxiNcz44HkR2Z+0H4NqB6KBM9tDrJPLqUH0sAAzLGoGhfttgad+6BrpqkmN0YyaLv1CFjfpFUNq1vkyJnqCoq0RSGHc6NbvNj307fW8wF7Q15gOapw0IuVoTkv5vwen0B3KF6Y41LrC2089KmJYeIvN6aozH5dVmp+A5cRHvOQKBXOotVzxykZ5EcTklDMFGAqdS6bT1OIWovA/xwFjzZ542Cb7UVyb8L4xl121uO6w1YtXI7L2uoafordb90DSiUjNOO1H8uGt5UUD+uEs07SCtuQrxp9cPC79J5/VgbUYHMMvKICPAN6fYqFHsWWgM1oszA9n/jLjqzkkMHZu1clzDjFF2ikt90jLSjn+RixShL+HX5S/J2C7fj5IE/2De7YNcDJmnBkSY+bBGACuLSgTJKGy6+no=
+  - secure: AwJqPAiFyO+qHGxE5oDaweDDH0hHUJDr79Ehe4A1Jdp7WYa9ik8pPkc/cymtCtAyW5eozQ3wSWVMfCkFPoYODUUEAQ5moIB53n1jeBB/aNvZtrQDeoIXeIEDBEORxWtEQimiKZ7RSMEPP4w/J8/dAcxTvDe57xM+4oMSIxfBAHv40WQAkQ2y38MX86IOBB+/QRTd3HxtKLI2lY0c5hvD+yMfM2exC9MIULj+ICRU7MZX+GTTBIy/mdNyMyBiT4jzznOxQgDfMCrapGJLLhOXJUyT+gPgxUSfalON01gzO/OFk5WACRofwxsD66m6KNiBAkklSbVwdphFdGVNXRsL7JriRCBU1KR7enapVz/GkaIY0GiCcQr5xCL6j6iU5SokTNiXzunLfnTpUfdxvrvXbmw0vyVxoAj0y+PeUep5eKmGUg9Y9Hno00EdckOgc56l7chqsXFF8cUqwIg5sRDi4YBBbr5mHpVkITezizsUVpub88rU4uwm7/OG0BhTHJI9B1z+hgmZ6/6iLpp/OECn1omwNls2ZCoJvMNZUKjkIr+v1JlSXzP3htxrSUqL4k0Z5KlsM/500zCtKKJAaFPCKiwZWDRYD5XV7X4EgarXf6/nb2FWmIaeJj8/ADfujJpxL+hScoblzDuKwCKZ8dhTesgXHFzJqQc1shHg1RC3Hzk=

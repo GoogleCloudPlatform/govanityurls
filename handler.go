@@ -52,6 +52,7 @@ func newHandler(config []byte) (*handler, error) {
 	if err := yaml.Unmarshal(config, &parsed); err != nil {
 		return nil, err
 	}
+
 	h := &handler{host: parsed.Host}
 	cacheAge := int64(86400) // 24 hours (in seconds)
 	if parsed.CacheAge != nil {
