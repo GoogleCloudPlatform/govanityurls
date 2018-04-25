@@ -80,6 +80,10 @@ apiVersion: extensions/v1beta1
 metadata:
   name: govanityurls-ingress
 spec:
+  tls:
+  - hosts:
+    - iop.inspur.com
+    secretName: govanityurls-cert
   rules:
   - host: iop.inspur.com
     http:
