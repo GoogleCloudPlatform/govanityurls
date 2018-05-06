@@ -63,7 +63,7 @@ func newHandler(config []byte) (*handler, error) {
 	h.cacheControl = fmt.Sprintf("public, max-age=%d", cacheAge)
 	for path, e := range parsed.Paths {
 		pc := pathConfig{
-			path:    strings.TrimSuffix(path, "/"),
+			path:    path,
 			repo:    e.Repo,
 			display: e.Display,
 			vcs:     e.VCS,
@@ -113,7 +113,7 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		Display string
 		VCS     string
 	}{
-		Import:  h.Host(r) + pc.path,
+		Import:  h.Host(r) + strings.TrimSuffix(pc.path, "/"),
 		Subpath: subpath,
 		Repo:    pc.repo,
 		Display: pc.display,
