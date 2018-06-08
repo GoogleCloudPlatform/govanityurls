@@ -1,8 +1,26 @@
-host: rakyll.pizza
+host: go.aporeto.io
 
 paths:
-  /portmidi:
-    repo: https://github.com/rakyll/portmidi
+  /regolithe:
+    repo: https://github.com/aporeto-inc/regolithe
 
-  /launchpad:
-    repo: https://github.com/rakyll/launchpad
+  /elemental:
+    repo: https://github.com/aporeto-inc/elemental
+
+  /gaia:
+    repo: https://github.com/aporeto-inc/gaia
+
+  /bahamut:
+    repo: https://github.com/aporeto-inc/bahamut
+
+  /addedeffect:
+    repo: https://github.com/aporeto-inc/addedeffect
+
+  /underwater:
+    repo: https://github.com/aporeto-inc/underwater
+
+  /midgard-lib:
+    repo: https://github.com/aporeto-inc/midgard-lib
+
+  /trireme:
+    repo: https://github.com/aporeto-inc/trireme
