@@ -1,8 +1,15 @@
 host: go.aporeto.io
 
 paths:
+  ## Public
   /regolithe:
     repo: https://github.com/aporeto-inc/regolithe
+
+  /manipulate:
+    repo: https://github.com/aporeto-inc/manipulate
+
+  /tg:
+    repo: https://github.com/aporeto-inc/tg
 
   /elemental:
     repo: https://github.com/aporeto-inc/elemental
@@ -16,11 +23,147 @@ paths:
   /addedeffect:
     repo: https://github.com/aporeto-inc/addedeffect
 
-  /underwater:
-    repo: https://github.com/aporeto-inc/underwater
-
   /midgard-lib:
     repo: https://github.com/aporeto-inc/midgard-lib
 
-  /trireme:
-    repo: https://github.com/aporeto-inc/trireme
+  /trireme-lib:
+    repo: https://github.com/aporeto-inc/trireme-lib
+
+  /groomer:
+    repo: https://github.com/aporeto-inc/groomer
+
+  /phoenix:
+    repo: https://github.com/aporeto-inc/phoenix
+
+  ## Private
+  /underwater:
+    repo: https://github.com/aporeto-inc/underwater
+    private: true
+
+  /doublecut:
+    repo: https://github.com/aporeto-inc/doublecut
+    private: true
+
+  /netlink-go:
+    repo: https://github.com/aporeto-inc/netlink-go
+    private: true
+
+  /meistertracer:
+    repo: https://github.com/aporeto-inc/meistertracer
+    private: true
+
+  /apocheck:
+    repo: https://github.com/aporeto-inc/apocheck
+    private: true
+
+  /apotests-lib:
+    repo: https://github.com/aporeto-inc/apotests-lib
+    private: true
+
+  /cosmomemory:
+    repo: https://github.com/aporeto-inc/cosmomemory
+    private: true
+
+  /godog:
+    repo: https://github.com/aporeto-inc/godog
+    private: true
+
+  /revive:
+    repo: https://github.com/aporeto-inc/revive
+    private: true
+
+  /squall:
+    repo: https://github.com/aporeto-inc/squall
+    private: true
+
+  /wutai:
+    repo: https://github.com/aporeto-inc/wutai
+    private: true
+
+  /barret:
+    repo: https://github.com/aporeto-inc/barret
+    private: true
+
+  /midgard:
+    repo: https://github.com/aporeto-inc/midgard
+    private: true
+
+  /nanaki:
+    repo: https://github.com/aporeto-inc/nanaki
+    private: true
+
+  /sephiroth:
+    repo: https://github.com/aporeto-inc/sephiroth
+    private: true
+
+  /vince:
+    repo: https://github.com/aporeto-inc/vince
+    private: true
+
+  /highwind:
+    repo: https://github.com/aporeto-inc/highwind
+    private: true
+
+  /zack:
+    repo: https://github.com/aporeto-inc/zack
+    private: true
+
+  /jenova:
+    repo: https://github.com/aporeto-inc/jenova
+    private: true
+
+  /elena:
+    repo: https://github.com/aporeto-inc/elena
+    private: true
+
+  /tagle:
+    repo: https://github.com/aporeto-inc/tagle
+    private: true
+
+  /hojo:
+    repo: https://github.com/aporeto-inc/hojo
+    private: true
+
+  /cactuar:
+    repo: https://github.com/aporeto-inc/cactuar
+    private: true
+
+  /yuffie:
+    repo: https://github.com/aporeto-inc/yuffie
+    private: true
+
+  /yuna:
+    repo: https://github.com/aporeto-inc/yuna
+    private: true
+
+  /tifa:
+    repo: https://github.com/aporeto-inc/tifa
+    private: true
+
+  /marlene:
+    repo: https://github.com/aporeto-inc/marlene
+    private: true
+
+  /meister:
+    repo: https://github.com/aporeto-inc/meister
+    private: true
+
+  /kube-squall:
+    repo: https://github.com/aporeto-inc/kube-squall
+    private: true
+
+  /claire:
+    repo: https://github.com/aporeto-inc/claire
+    private: true
+
+  /wedge:
+    repo: https://github.com/aporeto-inc/wedge
+    private: true
+
+  /enforcerd:
+    repo: https://github.com/aporeto-inc/enforcerd
+    private: true
+
+  /apoctl:
+    repo: https://github.com/aporeto-inc/apoctl
+    private: true
