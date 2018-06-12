@@ -2,6 +2,9 @@ host: go.aporeto.io
 
 paths:
   ## Public
+  /api:
+    repo: https://github.com/aporeto-inc/api
+
   /regolithe:
     repo: https://github.com/aporeto-inc/regolithe
 
@@ -166,4 +169,8 @@ paths:
 
   /apoctl:
     repo: https://github.com/aporeto-inc/apoctl
+    private: true
+
+  /backend:
+    repo: https://github.com/aporeto-inc/backend
     private: true
