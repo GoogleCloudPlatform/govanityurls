@@ -174,3 +174,7 @@ paths:
   /backend:
     repo: https://github.com/aporeto-inc/backend
     private: true
+
+  /enforcerd:
+    repo: https://github.com/aporeto-inc/enforcerd
+    private: true
