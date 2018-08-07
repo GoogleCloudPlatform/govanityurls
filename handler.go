@@ -37,6 +37,7 @@ type pathConfig struct {
 	repo    string
 	display string
 	vcs     string
+	private bool
 }
 
 func newHandler(config []byte) (*handler, error) {
@@ -47,6 +48,7 @@ func newHandler(config []byte) (*handler, error) {
 			Repo    string `yaml:"repo,omitempty"`
 			Display string `yaml:"display,omitempty"`
 			VCS     string `yaml:"vcs,omitempty"`
+			Private bool   `yaml:"private,omitempty"`
 		} `yaml:"paths,omitempty"`
 	}
 	if err := yaml.Unmarshal(config, &parsed); err != nil {
@@ -67,6 +69,7 @@ func newHandler(config []byte) (*handler, error) {
 			repo:    e.Repo,
 			display: e.Display,
 			vcs:     e.VCS,
+			private: e.Private,
 		}
 		switch {
 		case e.Display != "":
@@ -125,9 +128,11 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func (h *handler) serveIndex(w http.ResponseWriter, r *http.Request) {
 	host := h.Host(r)
-	handlers := make([]string, len(h.paths))
-	for i, h := range h.paths {
-		handlers[i] = host + h.path
+	handlers := []string{}
+	for _, h := range h.paths {
+		if !h.private {
+			handlers = append(handlers, host+h.path)
+		}
 	}
 	if err := indexTmpl.Execute(w, struct {
 		Host     string
