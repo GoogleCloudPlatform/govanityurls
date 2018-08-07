@@ -178,3 +178,7 @@ paths:
   /integrations-lib:
     repo: https://github.com/aporeto-inc/integrations-lib
     private: true
+
+  /bireme:
+    repo: https://github.com/aporeto-inc/bireme
+    private: true
