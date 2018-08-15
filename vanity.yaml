@@ -6,3 +6,7 @@ paths:
 
   /launchpad:
     repo: https://github.com/rakyll/launchpad
+
+  /opencensus/:
+    wildcard: true
+    repo: https://github.com/rakyll/opencensus-*

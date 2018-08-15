@@ -120,5 +120,10 @@ paths:
       <td>required if ambiguous</td>
       <td>If the version control system cannot be inferred (e.g. for Bitbucket or a custom domain), then this specifies the version control system as it would appear in <a href="https://golang.org/cmd/go/#hdr-Remote_import_paths"><code>go-import</code> meta tag</a>.  This can be one of <code>git</code>, <code>hg</code>, <code>svn</code>, or <code>bzr</code>.</td>
     </tr>
+    <tr>
+      <th scope="row"><code>wildcard</code></th>
+      <td>optional</td>
+      <td>Boolean. If <code>true</code>, it allows you to use the <code>*</code> placeholder, for the first sub-path inside your <code>repo</code> or <code>display</code></code></td>
+    </tr>
   </tbody>
 </table>
