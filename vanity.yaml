@@ -1,8 +1,20 @@
-host: rakyll.pizza
+host: go.etcd.io
 
 paths:
-  /portmidi:
-    repo: https://github.com/rakyll/portmidi
+  /etcd:
+    repo: https://github.com/etcd-io/etcd
 
-  /launchpad:
-    repo: https://github.com/rakyll/launchpad
+  /bbolt:
+    repo: https://github.com/etcd-io/bbolt
+
+  /gofail:
+    repo: https://github.com/etcd-io/gofail
+
+  /etcdlabs:
+    repo: https://github.com/etcd-io/etcdlabs
+
+  /dbtester:
+    repo: https://github.com/etcd-io/dbtester
+
+  /etcd-play:
+    repo: https://github.com/etcd-io/etcd-play
