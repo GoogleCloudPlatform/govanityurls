@@ -18,3 +18,12 @@ paths:
 
   /etcd-play:
     repo: https://github.com/etcd-io/etcd-play
+
+  /protodoc
+    repo: https://github.com/etcd-io/protodoc
+
+  /cetcd
+    repo: https://github.com/etcd-io/cetcd
+
+  /zetcd
+    repo: https://github.com/etcd-io/zetcd
