@@ -182,3 +182,7 @@ paths:
   /bireme:
     repo: https://github.com/aporeto-inc/bireme
     private: true
+
+  /aporeto-operator:
+    repo: https://github.com/aporeto-inc/aporeto-operator
+    private: true
