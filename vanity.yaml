@@ -38,6 +38,9 @@ paths:
   /phoenix:
     repo: https://github.com/aporeto-inc/phoenix
 
+  /wsc:
+    repo: https://github.com/aporeto-inc/wsc
+
   ## Private
   /underwater:
     repo: https://github.com/aporeto-inc/underwater
