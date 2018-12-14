@@ -68,10 +68,12 @@ func newHandler(config []byte) (*handler, error) {
 			display: e.Display,
 			vcs:     e.VCS,
 		}
+		isGithub := strings.HasPrefix(e.Repo, "https://github.com/")
+		isGitlab := strings.HasPrefix(e.Repo, "https://gitlab.com/")
 		switch {
 		case e.Display != "":
 			// Already filled in.
-		case strings.HasPrefix(e.Repo, "https://github.com/"):
+		case isGithub, isGitlab:
 			pc.display = fmt.Sprintf("%v %v/tree/master{/dir} %v/blob/master{/dir}/{file}#L{line}", e.Repo, e.Repo, e.Repo)
 		case strings.HasPrefix(e.Repo, "https://bitbucket.org"):
 			pc.display = fmt.Sprintf("%v %v/src/default{/dir} %v/src/default{/dir}/{file}#{file}-{line}", e.Repo, e.Repo, e.Repo)
@@ -82,7 +84,7 @@ func newHandler(config []byte) (*handler, error) {
 			if e.VCS != "bzr" && e.VCS != "git" && e.VCS != "hg" && e.VCS != "svn" {
 				return nil, fmt.Errorf("configuration for %v: unknown VCS %s", path, e.VCS)
 			}
-		case strings.HasPrefix(e.Repo, "https://github.com/"):
+		case isGithub, isGitlab:
 			pc.vcs = "git"
 		default:
 			return nil, fmt.Errorf("configuration for %v: cannot infer VCS from %s", path, e.Repo)
