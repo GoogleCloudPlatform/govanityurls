@@ -25,7 +25,7 @@ import (
 )
 
 func main() {
-	vanity, err := ioutil.ReadFile("./vanity.yaml")
+	vanity, err := ioutil.ReadFile("./config.yaml")
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -1,6 +1,11 @@
-runtime: go
-api_version: go1
+runtime: go112
 
 handlers:
+- url: /(.*\.(gif|png|jpg|svg|ico|txt|js|css))$
+  static_files: static/\1
+  upload: static/.*\.(gif|png|jpg|svg|ico|txt|js|css)$
+- url: /(browserconfig.xml|site.webmanifest)$
+  static_files: static/\1
+  upload: static/.*\.(xml|webmanifest)$
 - url: /.*
-  script: _go_app
+  script: auto

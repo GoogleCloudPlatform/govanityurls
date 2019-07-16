@@ -1,0 +1,50 @@
+# This is host path used for godoc links, etc.
+# Determined automatically if not set here.
+host: code.golift.io
+
+# This controls the max-age cache-control value.
+# This setting is global, can be set per path too.
+cache_max_age: 86400
+
+# These paths will be redirected if redir is not ""
+# This setting is global, can be set per path too.
+# Redirection works like this: if the path matches,
+# the sub-path is then checked for one of these strings.
+# If sub-path also matches, the client is redirected to
+# $redir + $subpath (subpath doesn't contain matched $path)
+redir_paths: ["tar.gz", "wiki", "releases"]
+
+paths:
+  /badge:
+    repo: https://github.com/golift/badge
+    redir: https://github.com/olift/badge
+  /unifi:
+    repo: https://github.com/golift/unifi
+    redir: https://github.com/olift/unifi
+  /deluge:
+    repo: https://github.com/golift/deluge
+    redir: https://github.com/olift/deluge
+  /imessage:
+    repo: https://github.com/golift/imessage
+    redir: https://github.com/golift/imessage
+  /subscribe:
+    repo: https://github.com/golift/subscribe
+    redir: https://github.com/golift/subscribe
+  /ffmpeg:
+    repo: https://github.com/golift/ffmpeg
+    redir: https://github.com/golift/ffmpeg
+  /application-builder:
+    repo: https://github.com/golift/application-builder
+    redir: https://github.com/golift/application-builder
+  /starr:
+    repo: https://github.com/golift/starr
+    redir: https://github.com/golift/starr
+  /securityspy:
+    repo: https://github.com/golift/securityspy
+    redir: https://github.com/golift/securityspy
+  /unifi-poller:
+    redir: https://github.com/davidnewhall/unifi-poller
+  /secspy:
+    redir: https://github.com/davidnewhall/secspy
+  /unpacker-poller:
+    redir: https://github.com/davidnewhall/unpacker-poller

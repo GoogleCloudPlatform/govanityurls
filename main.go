@@ -27,7 +27,7 @@ func main() {
 	var configPath string
 	switch len(os.Args) {
 	case 1:
-		configPath = "vanity.yaml"
+		configPath = "config.yaml"
 	case 2:
 		configPath = os.Args[1]
 	default:
@@ -42,6 +42,7 @@ func main() {
 		log.Fatal(err)
 	}
 	http.Handle("/", h)
+	log.Println("Listening at http://127.0.0.1:8080")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatal(err)
 	}
