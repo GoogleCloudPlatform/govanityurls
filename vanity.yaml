@@ -190,6 +190,10 @@ paths:
     repo: https://github.com/aporeto-inc/aporeto-operator
     private: true
 
-  /vortex:
-    repo: https://github.com/aporeto-inc/vortex
+  /apotests:
+    repo: https://github.com/aporeto-inc/apotests
+    private: true
+
+  /aposystest:
+    repo: https://github.com/aporeto-inc/aposystest
     private: true
