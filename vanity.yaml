@@ -197,3 +197,7 @@ paths:
   /aposystest:
     repo: https://github.com/aporeto-inc/aposystest
     private: true
+
+  /aporeliable:
+    repo: https://github.com/aporeto-inc/aporeliable
+    private: true
