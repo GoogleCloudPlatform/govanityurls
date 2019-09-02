@@ -12,11 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//+build !appengine
-
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -42,7 +41,13 @@ func main() {
 		log.Fatal(err)
 	}
 	http.Handle("/", h)
-	if err := http.ListenAndServe(":8080", nil); err != nil {
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+		log.Printf("Defaulting to port %s", port)
+	}
+	if err := http.ListenAndServe(fmt.Sprintf(":%s", port), nil); err != nil {
 		log.Fatal(err)
 	}
 }

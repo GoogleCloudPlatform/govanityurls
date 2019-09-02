@@ -65,6 +65,16 @@ func TestHandler(t *testing.T) {
 			goSource: "example.com/gopdf https://bitbucket.org/zombiezen/gopdf https://bitbucket.org/zombiezen/gopdf/src/default{/dir} https://bitbucket.org/zombiezen/gopdf/src/default{/dir}/{file}#{file}-{line}",
 		},
 		{
+			name: "display Gitlab inference",
+			config: "host: example.com\n" +
+				"paths:\n" +
+				"  /portmidi:\n" +
+				"    repo: https://gitlab.com/rakyll/portmidi\n",
+			path:     "/portmidi",
+			goImport: "example.com/portmidi git https://gitlab.com/rakyll/portmidi",
+			goSource: "example.com/portmidi https://gitlab.com/rakyll/portmidi https://gitlab.com/rakyll/portmidi/tree/master{/dir} https://gitlab.com/rakyll/portmidi/blob/master{/dir}/{file}#L{line}",
+		},
+		{
 			name: "Bitbucket Git",
 			config: "host: example.com\n" +
 				"paths:\n" +
@@ -237,10 +247,10 @@ func TestPathConfigSetFind(t *testing.T) {
 			want:  "/y",
 		},
 		{
-			paths: []string{"/example/helloworld", "/", "/y", "/foo"},
-			query: "/x/y/",
-			want:  "/",
-			subpath:  "x/y/",
+			paths:   []string{"/example/helloworld", "/", "/y", "/foo"},
+			query:   "/x/y/",
+			want:    "/",
+			subpath: "x/y/",
 		},
 		{
 			paths: []string{"/example/helloworld", "/y", "/foo"},
