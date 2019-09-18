@@ -201,3 +201,7 @@ paths:
   /aporeliable:
     repo: https://github.com/aporeto-inc/aporeliable
     private: true
+
+  /splunk:
+    repo: https://github.com/aporeto-inc/splunk
+    private: true
