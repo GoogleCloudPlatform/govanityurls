@@ -205,3 +205,15 @@ paths:
   /splunk:
     repo: https://github.com/aporeto-inc/splunk
     private: true
+
+  /terraform:
+    repo: https://github.com/aporeto-inc/terraform
+    private: true
+
+  /ansible:
+    repo: https://github.com/aporeto-inc/ansible
+    private: true
+
+  /benchmark-suite:
+    repo: https://github.com/aporeto-inc/benchmark-suite
+    private: true
