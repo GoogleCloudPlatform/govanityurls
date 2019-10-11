@@ -41,6 +41,9 @@ paths:
   /wsc:
     repo: https://github.com/aporeto-inc/wsc
 
+  /remod:
+    repo: https://github.com/aporeto-inc/remod
+
   ## Private
   /underwater:
     repo: https://github.com/aporeto-inc/underwater
