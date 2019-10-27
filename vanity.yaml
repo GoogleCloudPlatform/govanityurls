@@ -220,3 +220,7 @@ paths:
   /benchmark-suite:
     repo: https://github.com/aporeto-inc/benchmark-suite
     private: true
+
+  /sputnik:
+    repo: https://github.com/aporeto-inc/sputnik
+    private: true
