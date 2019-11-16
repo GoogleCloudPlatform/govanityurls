@@ -224,3 +224,7 @@ paths:
   /sputnik:
     repo: https://github.com/aporeto-inc/sputnik
     private: true
+
+  /spammer:
+    repo: https://github.com/aporeto-inc/spammer
+    private: true
