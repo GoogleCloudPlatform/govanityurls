@@ -9,9 +9,10 @@ It also can run on Google App Engine.
 Install and run the binary:
 
 ```
-$ go get -u https://github.com/GoogleCloudPlatform/govanityurls
+$ go get -u github.com/GoogleCloudPlatform/govanityurls
 $ # update vanity.yaml
 $ govanityurls
+$ # open http://localhost:8080
 ```
 
 
