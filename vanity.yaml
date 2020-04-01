@@ -230,33 +230,33 @@ paths:
     private: true
 
   /eevee:
-    repo: github.com/aporeto-inc/eevee
+    repo: https://github.com/aporeto-inc/eevee
     private: true
 
   /jolteon:
-    repo: github.com/aporeto-inc/jolteon
+    repo: https://github.com/aporeto-inc/jolteon
     private: true
 
   /flareon:
-    repo: github.com/aporeto-inc/flareon
+    repo: https://github.com/aporeto-inc/flareon
     private: true
 
   /vaporeon:
-    repo: github.com/aporeto-inc/vaporeon
+    repo: https://github.com/aporeto-inc/vaporeon
     private: true
 
   /espeon:
-    repo: github.com/aporeto-inc/espeon
+    repo: https://github.com/aporeto-inc/espeon
     private: true
 
   /umbreon:
-    repo: github.com/aporeto-inc/umbreon
+    repo: https://github.com/aporeto-inc/umbreon
     private: true
 
   /leafeon:
-    repo: github.com/aporeto-inc/leafeon
+    repo: https://github.com/aporeto-inc/leafeon
     private: true
 
   /glaceon:
-    repo: github.com/aporeto-inc/glaceon
+    repo: https://github.com/aporeto-inc/glaceon
     private: true
