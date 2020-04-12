@@ -24,6 +24,7 @@ import (
 	"strings"
 
 	"gopkg.in/yaml.v2"
+	"regexp"
 )
 
 type handler struct {
@@ -33,6 +34,7 @@ type handler struct {
 }
 
 type pathConfig struct {
+	wildcard bool
 	path    string
 	repo    string
 	display string
@@ -45,6 +47,7 @@ func newHandler(config []byte) (*handler, error) {
 		CacheAge *int64 `yaml:"cache_max_age,omitempty"`
 		Paths    map[string]struct {
 			Repo    string `yaml:"repo,omitempty"`
+			Wildcard    bool `yaml:"wildcard,omitempty"`
 			Display string `yaml:"display,omitempty"`
 			VCS     string `yaml:"vcs,omitempty"`
 		} `yaml:"paths,omitempty"`
@@ -67,6 +70,7 @@ func newHandler(config []byte) (*handler, error) {
 			repo:    e.Repo,
 			display: e.Display,
 			vcs:     e.VCS,
+			wildcard: e.Wildcard,
 		}
 		switch {
 		case e.Display != "":
@@ -95,7 +99,7 @@ func newHandler(config []byte) (*handler, error) {
 
 func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	current := r.URL.Path
-	pc, subpath := h.paths.find(current)
+	pc, subpath, wildcard := h.paths.find(current)
 	if pc == nil && current == "/" {
 		h.serveIndex(w, r)
 		return
@@ -103,6 +107,11 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if pc == nil {
 		http.NotFound(w, r)
 		return
+	}
+
+	importPath := h.Host(r) + pc.path
+	if wildcard != "" {
+		importPath += "/" + wildcard
 	}
 
 	w.Header().Set("Cache-Control", h.cacheControl)
@@ -113,10 +122,10 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		Display string
 		VCS     string
 	}{
-		Import:  h.Host(r) + pc.path,
+		Import:  importPath,
 		Subpath: subpath,
-		Repo:    pc.repo,
-		Display: pc.display,
+		Repo:    strings.Replace(pc.repo, "*", wildcard, -1),
+		Display: strings.Replace(pc.display, "*", wildcard, -1),
 		VCS:     pc.vcs,
 	}); err != nil {
 		http.Error(w, "cannot render the page", http.StatusInternalServerError)
@@ -184,17 +193,14 @@ func (pset pathConfigSet) Swap(i, j int) {
 	pset[i], pset[j] = pset[j], pset[i]
 }
 
-func (pset pathConfigSet) find(path string) (pc *pathConfig, subpath string) {
+func (pset pathConfigSet) find(path string) (pc *pathConfig, subpath string, wildcard string) {
 	// Fast path with binary search to retrieve exact matches
 	// e.g. given pset ["/", "/abc", "/xyz"], path "/def" won't match.
 	i := sort.Search(len(pset), func(i int) bool {
 		return pset[i].path >= path
 	})
 	if i < len(pset) && pset[i].path == path {
-		return &pset[i], ""
-	}
-	if i > 0 && strings.HasPrefix(path, pset[i-1].path+"/") {
-		return &pset[i-1], path[len(pset[i-1].path)+1:]
+		return &pset[i], "", ""
 	}
 
 	// Slow path, now looking for the longest prefix/shortest subpath i.e.
@@ -214,6 +220,24 @@ func (pset pathConfigSet) find(path string) (pc *pathConfig, subpath string) {
 			// route with equal or greater length is NOT a match.
 			continue
 		}
+
+		if ps.wildcard {
+			p := ps.path
+			if !strings.HasSuffix(p, "/") {
+				p += "/"
+			}
+			regex := "^" + strings.Replace(p, "/", "\\/", -1) + "(.+)=?"
+			r := regexp.MustCompile(regex)
+			finds := r.FindStringSubmatch(path)
+			if finds != nil {
+				parts := strings.SplitN(finds[1], "/", 2)
+				if len(parts) > 1 {
+					return &pset[i], parts[1], parts[0]
+				}
+				return &pset[i], "", parts[0]
+			}
+		}
+
 		sSubpath := strings.TrimPrefix(path, ps.path)
 		if len(sSubpath) < lenShortestSubpath {
 			subpath = sSubpath
@@ -221,5 +245,5 @@ func (pset pathConfigSet) find(path string) (pc *pathConfig, subpath string) {
 			bestMatchConfig = &pset[i]
 		}
 	}
-	return bestMatchConfig, subpath
+	return bestMatchConfig, subpath, ""
 }
