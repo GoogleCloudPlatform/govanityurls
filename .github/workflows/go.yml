@@ -1,0 +1,18 @@
+name: Run Go tests
+on:
+  push:
+    # We want to run the workflow on all branches.
+    # But you can restrict the runs if necessary.
+    branches:
+      - "*"
+
+jobs:
+  test:
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-go@v2-beta
+      with:
+        # The Go version to download (if necessary) and use.
+        go-version: '^1.13.1'
+    - run: go test ./...
