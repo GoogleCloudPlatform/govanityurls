@@ -131,7 +131,8 @@ paths:
     <tr>
       <th scope="row"><code>vcs</code></th>
       <td>required if ambiguous</td>
-      <td>If the version control system cannot be inferred (e.g. for Bitbucket or a custom domain), then this specifies the version control system as it would appear in <a href="https://golang.org/cmd/go/#hdr-Remote_import_paths"><code>go-import</code> meta tag</a>.  This can be one of <code>git</code>, <code>hg</code>, <code>svn</code>, or <code>bzr</code>.</td>
+      <td>If the version control system cannot be inferred (e.g. for Bitbucket or a custom domain), then this specifies the version control system as it would appear in <a href="https://golang.org/cmd/go/#hdr-Remote_import_paths"><code>go-import</code> meta tag</a>.  This can be one of <code>git</code>, <code>hg</code>, <code>svn</code>, or <code>bzr</code>.<br />
+      You can also use <code>gitlab</code>/<code>github</code>/<code>bitbucket</code> which will be translated to <code>git</code> and will add the default <code>disaplay</code></td>
     </tr>
   </tbody>
 </table>
