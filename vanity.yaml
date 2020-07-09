@@ -260,3 +260,7 @@ paths:
   /glaceon:
     repo: https://github.com/aporeto-inc/glaceon
     private: true
+
+  /go-twistlock:
+    repo: https://github.com/aporeto-inc/go-twistlock
+    private: true
