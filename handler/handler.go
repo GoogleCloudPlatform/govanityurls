@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// govanityurls serves Go vanity URLs.
-package main
+// Package handler implements the http handler for govanityurls.
+package handler
 
 import (
 	"errors"
@@ -27,7 +27,7 @@ import (
 )
 
 type handler struct {
-	host         string
+	hostName     string
 	cacheControl string
 	paths        pathConfigSet
 }
@@ -39,29 +39,31 @@ type pathConfig struct {
 	vcs     string
 }
 
-func newHandler(config []byte) (*handler, error) {
-	var parsed struct {
-		Host     string `yaml:"host,omitempty"`
-		CacheAge *int64 `yaml:"cache_max_age,omitempty"`
-		Paths    map[string]struct {
-			Repo    string `yaml:"repo,omitempty"`
-			Display string `yaml:"display,omitempty"`
-			VCS     string `yaml:"vcs,omitempty"`
-		} `yaml:"paths,omitempty"`
-	}
-	if err := yaml.Unmarshal(config, &parsed); err != nil {
-		return nil, err
-	}
-	h := &handler{host: parsed.Host}
+type ConfigPath struct {
+	Repo    string `yaml:"repo,omitempty"`
+	Display string `yaml:"display,omitempty"`
+	VCS     string `yaml:"vcs,omitempty"`
+}
+
+type Config struct {
+	Host     string                `yaml:"host,omitempty"`
+	CacheAge *int64                `yaml:"cache_max_age,omitempty"`
+	Paths    map[string]ConfigPath `yaml:"paths,omitempty"`
+}
+
+// New returns an http.Handler based on provided configuration. The handler will
+// respond to `go get` requests and redirect to the right repository.
+func New(config Config) (http.Handler, error) {
+	h := &handler{hostName: config.Host}
 	cacheAge := int64(86400) // 24 hours (in seconds)
-	if parsed.CacheAge != nil {
-		cacheAge = *parsed.CacheAge
+	if config.CacheAge != nil {
+		cacheAge = *config.CacheAge
 		if cacheAge < 0 {
 			return nil, errors.New("cache_max_age is negative")
 		}
 	}
 	h.cacheControl = fmt.Sprintf("public, max-age=%d", cacheAge)
-	for path, e := range parsed.Paths {
+	for path, e := range config.Paths {
 		pc := pathConfig{
 			path:    strings.TrimSuffix(path, "/"),
 			repo:    e.Repo,
@@ -93,8 +95,26 @@ func newHandler(config []byte) (*handler, error) {
 	return h, nil
 }
 
+// ParseConfig parses a slice of bytes containing yaml configuration and
+// returns a Config instance.
+func ParseConfig(config []byte) (Config, error) {
+	var parsed Config
+	if err := yaml.Unmarshal(config, &parsed); err != nil {
+		return parsed, err
+	}
+	return parsed, nil
+}
+
+// ServeHTTP serves handles go get requests.
 func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	current := r.URL.Path
+	// We check for the paths that don't start with / here as some middleware
+	// like http.StripPrefix will strip prefix including a trailing slash.
+	// e.g. http.Handle("/vanity/", http.StripPrefix("/vanity/", h))
+	if !strings.HasPrefix(current, "/") {
+		current = "/" + current
+	}
+
 	pc, subpath := h.paths.find(current)
 	if pc == nil && current == "/" {
 		h.serveIndex(w, r)
@@ -113,7 +133,7 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		Display string
 		VCS     string
 	}{
-		Import:  h.Host(r) + pc.path,
+		Import:  h.host(r) + pc.path,
 		Subpath: subpath,
 		Repo:    pc.repo,
 		Display: pc.display,
@@ -124,7 +144,7 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *handler) serveIndex(w http.ResponseWriter, r *http.Request) {
-	host := h.Host(r)
+	host := h.host(r)
 	handlers := make([]string, len(h.paths))
 	for i, h := range h.paths {
 		handlers[i] = host + h.path
@@ -140,10 +160,11 @@ func (h *handler) serveIndex(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *handler) Host(r *http.Request) string {
-	host := h.host
+func (h *handler) host(r *http.Request) string {
+	host := h.hostName
 	if host == "" {
-		host = defaultHost(r)
+		// Default to using the requested host name.
+		host = r.Host
 	}
 	return host
 }

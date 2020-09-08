@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package handler
 
 import (
 	"bytes"
@@ -23,10 +23,11 @@ import (
 	"testing"
 )
 
+// TestHandler tests basic handler functionality.
 func TestHandler(t *testing.T) {
 	tests := []struct {
 		name   string
-		config string
+		config Config
 		path   string
 
 		goImport string
@@ -34,121 +35,163 @@ func TestHandler(t *testing.T) {
 	}{
 		{
 			name: "explicit display",
-			config: "host: example.com\n" +
-				"paths:\n" +
-				"  /portmidi:\n" +
-				"    repo: https://github.com/rakyll/portmidi\n" +
-				"    display: https://github.com/rakyll/portmidi _ _\n",
+			config: Config{
+				Host: "example.com",
+				Paths: map[string]ConfigPath{
+					"/portmidi": {
+						Repo:    "https://github.com/rakyll/portmidi",
+						Display: "https://github.com/rakyll/portmidi _ _",
+					},
+				},
+			},
 			path:     "/portmidi",
 			goImport: "example.com/portmidi git https://github.com/rakyll/portmidi",
 			goSource: "example.com/portmidi https://github.com/rakyll/portmidi _ _",
 		},
 		{
 			name: "display GitHub inference",
-			config: "host: example.com\n" +
-				"paths:\n" +
-				"  /portmidi:\n" +
-				"    repo: https://github.com/rakyll/portmidi\n",
+			config: Config{
+				Host: "example.com",
+				Paths: map[string]ConfigPath{
+					"/portmidi": {
+						Repo: "https://github.com/rakyll/portmidi",
+					},
+				},
+			},
 			path:     "/portmidi",
 			goImport: "example.com/portmidi git https://github.com/rakyll/portmidi",
 			goSource: "example.com/portmidi https://github.com/rakyll/portmidi https://github.com/rakyll/portmidi/tree/master{/dir} https://github.com/rakyll/portmidi/blob/master{/dir}/{file}#L{line}",
 		},
 		{
 			name: "Bitbucket Mercurial",
-			config: "host: example.com\n" +
-				"paths:\n" +
-				"  /gopdf:\n" +
-				"    repo: https://bitbucket.org/zombiezen/gopdf\n" +
-				"    vcs: hg\n",
+			config: Config{
+				Host: "example.com",
+				Paths: map[string]ConfigPath{
+					"/gopdf": {
+						Repo: "https://bitbucket.org/zombiezen/gopdf",
+						VCS:  "hg",
+					},
+				},
+			},
 			path:     "/gopdf",
 			goImport: "example.com/gopdf hg https://bitbucket.org/zombiezen/gopdf",
 			goSource: "example.com/gopdf https://bitbucket.org/zombiezen/gopdf https://bitbucket.org/zombiezen/gopdf/src/default{/dir} https://bitbucket.org/zombiezen/gopdf/src/default{/dir}/{file}#{file}-{line}",
 		},
 		{
 			name: "Bitbucket Git",
-			config: "host: example.com\n" +
-				"paths:\n" +
-				"  /mygit:\n" +
-				"    repo: https://bitbucket.org/zombiezen/mygit\n" +
-				"    vcs: git\n",
+			config: Config{
+				Host: "example.com",
+				Paths: map[string]ConfigPath{
+					"/mygit": {
+						Repo: "https://bitbucket.org/zombiezen/mygit",
+						VCS:  "git",
+					},
+				},
+			},
 			path:     "/mygit",
 			goImport: "example.com/mygit git https://bitbucket.org/zombiezen/mygit",
 			goSource: "example.com/mygit https://bitbucket.org/zombiezen/mygit https://bitbucket.org/zombiezen/mygit/src/default{/dir} https://bitbucket.org/zombiezen/mygit/src/default{/dir}/{file}#{file}-{line}",
 		},
 		{
 			name: "subpath",
-			config: "host: example.com\n" +
-				"paths:\n" +
-				"  /portmidi:\n" +
-				"    repo: https://github.com/rakyll/portmidi\n" +
-				"    display: https://github.com/rakyll/portmidi _ _\n",
+			config: Config{
+				Host: "example.com",
+				Paths: map[string]ConfigPath{
+					"/portmidi": {
+						Repo:    "https://github.com/rakyll/portmidi",
+						Display: "https://github.com/rakyll/portmidi _ _",
+					},
+				},
+			},
 			path:     "/portmidi/foo",
 			goImport: "example.com/portmidi git https://github.com/rakyll/portmidi",
 			goSource: "example.com/portmidi https://github.com/rakyll/portmidi _ _",
 		},
 		{
 			name: "subpath with trailing config slash",
-			config: "host: example.com\n" +
-				"paths:\n" +
-				"  /portmidi/:\n" +
-				"    repo: https://github.com/rakyll/portmidi\n" +
-				"    display: https://github.com/rakyll/portmidi _ _\n",
+			config: Config{
+				Host: "example.com",
+				Paths: map[string]ConfigPath{
+					"/portmidi/": {
+						Repo:    "https://github.com/rakyll/portmidi",
+						Display: "https://github.com/rakyll/portmidi _ _",
+					},
+				},
+			},
 			path:     "/portmidi/foo",
 			goImport: "example.com/portmidi git https://github.com/rakyll/portmidi",
 			goSource: "example.com/portmidi https://github.com/rakyll/portmidi _ _",
 		},
 	}
 	for _, test := range tests {
-		h, err := newHandler([]byte(test.config))
-		if err != nil {
-			t.Errorf("%s: newHandler: %v", test.name, err)
-			continue
-		}
-		s := httptest.NewServer(h)
-		resp, err := http.Get(s.URL + test.path)
-		if err != nil {
+		t.Run(test.name, func(t *testing.T) {
+			h, err := New(test.config)
+			if err != nil {
+				t.Errorf("New: %v", err)
+				return
+			}
+			s := httptest.NewServer(h)
+			resp, err := http.Get(s.URL + test.path)
+			if err != nil {
+				s.Close()
+				t.Errorf("http.Get: %v", err)
+				return
+			}
+			data, err := ioutil.ReadAll(resp.Body)
+			resp.Body.Close()
 			s.Close()
-			t.Errorf("%s: http.Get: %v", test.name, err)
-			continue
-		}
-		data, err := ioutil.ReadAll(resp.Body)
-		resp.Body.Close()
-		s.Close()
-		if resp.StatusCode != http.StatusOK {
-			t.Errorf("%s: status code = %s; want 200 OK", test.name, resp.Status)
-		}
-		if err != nil {
-			t.Errorf("%s: ioutil.ReadAll: %v", test.name, err)
-			continue
-		}
-		if got := findMeta(data, "go-import"); got != test.goImport {
-			t.Errorf("%s: meta go-import = %q; want %q", test.name, got, test.goImport)
-		}
-		if got := findMeta(data, "go-source"); got != test.goSource {
-			t.Errorf("%s: meta go-source = %q; want %q", test.name, got, test.goSource)
-		}
+			if resp.StatusCode != http.StatusOK {
+				t.Errorf("status code = %s; want 200 OK", resp.Status)
+			}
+			if err != nil {
+				t.Errorf("ioutil.ReadAll: %v", err)
+				return
+			}
+			if got := findMeta(data, "go-import"); got != test.goImport {
+				t.Errorf("meta go-import = %q; want %q", got, test.goImport)
+			}
+			if got := findMeta(data, "go-source"); got != test.goSource {
+				t.Errorf("meta go-source = %q; want %q", got, test.goSource)
+			}
+		})
 	}
 }
 
+// TestBadConfigs tests error handling for invalid configuration.
 func TestBadConfigs(t *testing.T) {
-	badConfigs := []string{
-		"paths:\n" +
-			"  /missingvcs:\n" +
-			"    repo: https://bitbucket.org/zombiezen/gopdf\n",
-		"paths:\n" +
-			"  /unknownvcs:\n" +
-			"    repo: https://bitbucket.org/zombiezen/gopdf\n" +
-			"    vcs: xyzzy\n",
-		"cache_max_age: -1\n" +
-			"paths:\n" +
-			"  /portmidi:\n" +
-			"    repo: https://github.com/rakyll/portmidi\n",
+	negativeCacheAge := int64(-1)
+	badConfigs := map[string]Config{
+		"missing vcs": {
+			Paths: map[string]ConfigPath{
+				"/missingvcs": {
+					Repo: "https://bitbucket.org/zombiezen/gopdf",
+				},
+			},
+		},
+		"unknown vcs": {
+			Paths: map[string]ConfigPath{
+				"/unknownvcs": {
+					Repo: "https://bitbucket.org/zombiezen/gopdf",
+					VCS:  "xyzzy",
+				},
+			},
+		},
+		"bad cache_max_age": {
+			Paths: map[string]ConfigPath{
+				"/portmidi": {
+					Repo: "https://github.com/rakyll/portmidi",
+				},
+			},
+			CacheAge: &negativeCacheAge,
+		},
 	}
-	for _, config := range badConfigs {
-		_, err := newHandler([]byte(config))
-		if err == nil {
-			t.Errorf("expected config to produce an error, but did not:\n%s", config)
-		}
+	for name, config := range badConfigs {
+		t.Run(name, func(t *testing.T) {
+			_, err := New(config)
+			if err == nil {
+				t.Errorf("expected config to produce an error, but did not:\n%#v", config)
+			}
+		})
 	}
 }
 
@@ -169,6 +212,7 @@ func findMeta(data []byte, name string) string {
 	return string(content[:j])
 }
 
+// TestPathConfigSetFind tests configpath search logic.
 func TestPathConfigSetFind(t *testing.T) {
 	tests := []struct {
 		paths   []string
@@ -237,10 +281,10 @@ func TestPathConfigSetFind(t *testing.T) {
 			want:  "/y",
 		},
 		{
-			paths: []string{"/example/helloworld", "/", "/y", "/foo"},
-			query: "/x/y/",
-			want:  "/",
-			subpath:  "x/y/",
+			paths:   []string{"/example/helloworld", "/", "/y", "/foo"},
+			query:   "/x/y/",
+			want:    "/",
+			subpath: "x/y/",
 		},
 		{
 			paths: []string{"/example/helloworld", "/y", "/foo"},
@@ -255,61 +299,89 @@ func TestPathConfigSetFind(t *testing.T) {
 		return s
 	}
 	for _, test := range tests {
-		pset := make(pathConfigSet, len(test.paths))
-		for i := range test.paths {
-			pset[i].path = test.paths[i]
-		}
-		sort.Sort(pset)
-		pc, subpath := pset.find(test.query)
-		var got string
-		if pc != nil {
-			got = pc.path
-		}
-		if got != test.want || subpath != test.subpath {
-			t.Errorf("pathConfigSet(%v).find(%q) = %v, %v; want %v, %v",
-				test.paths, test.query, emptyToNil(got), subpath, emptyToNil(test.want), test.subpath)
-		}
+		t.Run(test.query, func(t *testing.T) {
+			pset := make(pathConfigSet, len(test.paths))
+			for i := range test.paths {
+				pset[i].path = test.paths[i]
+			}
+			sort.Sort(pset)
+			pc, subpath := pset.find(test.query)
+			var got string
+			if pc != nil {
+				got = pc.path
+			}
+			if got != test.want || subpath != test.subpath {
+				t.Errorf("pathConfigSet(%v).find(%q) = %v, %v; want %v, %v",
+					test.paths, test.query, emptyToNil(got), subpath, emptyToNil(test.want), test.subpath)
+			}
+		})
 	}
 }
 
+// TestCacheHeader tests generation of the Cache-Control header.
 func TestCacheHeader(t *testing.T) {
+	zeroAge := int64(0)
+	longAge := int64(60)
+
 	tests := []struct {
 		name         string
-		config       string
+		config       Config
 		cacheControl string
 	}{
 		{
-			name:         "default",
+			name: "default",
+			config: Config{
+				Paths: map[string]ConfigPath{
+					"/portmidi": {
+						Repo: "https://github.com/rakyll/portmidi",
+					},
+				},
+			},
 			cacheControl: "public, max-age=86400",
 		},
 		{
-			name:         "specify time",
-			config:       "cache_max_age: 60\n",
+			name: "specify time",
+			config: Config{
+				Paths: map[string]ConfigPath{
+					"/portmidi": {
+						Repo: "https://github.com/rakyll/portmidi",
+					},
+				},
+				CacheAge: &longAge,
+			},
 			cacheControl: "public, max-age=60",
 		},
 		{
-			name:         "zero",
-			config:       "cache_max_age: 0\n",
+			name: "zero config_max_age",
+			config: Config{
+				Paths: map[string]ConfigPath{
+					"/portmidi": {
+						Repo: "https://github.com/rakyll/portmidi",
+					},
+				},
+				CacheAge: &zeroAge,
+			},
 			cacheControl: "public, max-age=0",
 		},
 	}
 	for _, test := range tests {
-		h, err := newHandler([]byte("paths:\n  /portmidi:\n    repo: https://github.com/rakyll/portmidi\n" +
-			test.config))
-		if err != nil {
-			t.Errorf("%s: newHandler: %v", test.name, err)
-			continue
-		}
-		s := httptest.NewServer(h)
-		resp, err := http.Get(s.URL + "/portmidi")
-		if err != nil {
-			t.Errorf("%s: http.Get: %v", test.name, err)
-			continue
-		}
-		resp.Body.Close()
-		got := resp.Header.Get("Cache-Control")
-		if got != test.cacheControl {
-			t.Errorf("%s: Cache-Control header = %q; want %q", test.name, got, test.cacheControl)
-		}
+		t.Run(test.name, func(t *testing.T) {
+			h, err := New(test.config)
+			if err != nil {
+				t.Errorf("newHandler: %v", err)
+				return
+			}
+			s := httptest.NewServer(h)
+			resp, err := http.Get(s.URL + "/portmidi")
+			if err != nil {
+				t.Errorf("http.Get: %v", err)
+				return
+			}
+			resp.Body.Close()
+			got := resp.Header.Get("Cache-Control")
+			if got != test.cacheControl {
+				t.Errorf("Cache-Control header = %q; want %q", got, test.cacheControl)
+			}
+		})
 	}
 }

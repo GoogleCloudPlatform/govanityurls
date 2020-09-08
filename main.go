@@ -19,6 +19,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/GoogleCloudPlatform/govanityurls/handler"
 )
 
 func main() {
@@ -35,7 +37,13 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	h, err := newHandler(vanity)
+
+	config, err := handler.ParseConfig(vanity)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	h, err := handler.New(config)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -48,8 +56,4 @@ func main() {
 	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		log.Fatal(err)
 	}
-}
-
-func defaultHost(r *http.Request) string {
-	return r.Host
 }
