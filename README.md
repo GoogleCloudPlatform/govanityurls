@@ -1,8 +1,10 @@
 # Go Vanity URLs
 
-Go Vanity URLs is a simple Go server that allows you
-to set custom import paths for your Go packages.
-It also can run on Google App Engine.
+[![GoDoc](https://godoc.org/github.com/GoogleCloudPlatform/govanityurls?status.svg)](https://godoc.org/github.com/GoogleCloudPlatform/govanityurls)
+
+Go Vanity URLs is a simple library and Go server that allows you to set custom
+import paths for your Go packages. It runs well on serverless infrastructure
+such as Google App Engine or Cloud Run.
 
 ## Quickstart
 
@@ -15,25 +17,25 @@ $ govanityurls
 $ # open http://localhost:8080
 ```
 
-
 ### Google App Engine
 
-Install [gcloud](https://cloud.google.com/sdk/downloads) and install Go App Engine component:
+Install [gcloud](https://cloud.google.com/sdk/downloads) and install Go App
+Engine component:
 
 ```
 $ gcloud components install app-engine-go
 ```
 
-Setup a [custom domain](https://cloud.google.com/appengine/docs/standard/python/using-custom-domains-and-ssl) for your app.
+Setup a
+[custom domain](https://cloud.google.com/appengine/docs/standard/python/using-custom-domains-and-ssl)
+for your app.
 
-Get the application:
-```
-git clone https://github.com/GoogleCloudPlatform/govanityurls
-cd govanityurls
-```
+Get the application: `git clone
+https://github.com/GoogleCloudPlatform/govanityurls cd govanityurls`
 
-Edit `vanity.yaml` to add any number of git repos. E.g., `customdomain.com/portmidi` will
-serve the [https://github.com/rakyll/portmidi](https://github.com/rakyll/portmidi) repo.
+Edit `vanity.yaml` to add any number of git repos. E.g.,
+`customdomain.com/portmidi` will serve the
+[https://github.com/rakyll/portmidi](https://github.com/rakyll/portmidi) repo.
 
 ```
 paths:
@@ -65,8 +67,8 @@ runtime: go
 env: flex
 ```
 
-This project is a normal Go HTTP server, so you can also incorporate the
-handler into larger Go servers.
+This project is a normal Go HTTP server, so you can also incorporate the handler
+into larger Go servers.
 
 ## Configuration File
 
