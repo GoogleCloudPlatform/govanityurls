@@ -264,3 +264,11 @@ paths:
   /go-twistlock:
     repo: https://github.com/aporeto-inc/go-twistlock
     private: true
+
+  /cns-agent-boot:
+    repo: https://github.com/aporeto-inc/cns-agent-boot
+    private: true
+
+  /cns-agent-mgr:
+    repo: https://github.com/aporeto-inc/cns-agent-mgr
+    private: true
