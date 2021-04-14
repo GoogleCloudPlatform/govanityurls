@@ -261,8 +261,8 @@ paths:
     repo: https://github.com/aporeto-inc/glaceon
     private: true
 
-  /proctologist:
-    repo: https://github.com/aporeto-inc/proctologist
+  /colonoscopy:
+    repo: https://github.com/aporeto-inc/colonoscopy
     private: true
 
   /go-twistlock:
