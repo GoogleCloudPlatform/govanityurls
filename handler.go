@@ -75,7 +75,11 @@ func newHandler(config []byte) (*handler, error) {
 		case e.Display != "":
 			// Already filled in.
 		case strings.HasPrefix(e.Repo, "https://github.com/"):
+		case strings.HasPrefix(e.Repo, "https://spring.paloaltonetworks.com/"):
 			pc.display = fmt.Sprintf("%v %v/tree/master{/dir} %v/blob/master{/dir}/{file}#L{line}", e.Repo, e.Repo, e.Repo)
+		case strings.HasPrefix(e.Repo, "https://gitlab.com"):
+			// note: seems to work without the -, too, but this looks reasonable
+			pc.display = fmt.Sprintf("%v %v/-/tree/master{/dir} %v/-/blob/master{/dir}/{file}#L{line}", e.Repo, e.Repo, e.Repo)
 		case strings.HasPrefix(e.Repo, "https://bitbucket.org"):
 			pc.display = fmt.Sprintf("%v %v/src/default{/dir} %v/src/default{/dir}/{file}#{file}-{line}", e.Repo, e.Repo, e.Repo)
 		}
@@ -86,6 +90,8 @@ func newHandler(config []byte) (*handler, error) {
 				return nil, fmt.Errorf("configuration for %v: unknown VCS %s", path, e.VCS)
 			}
 		case strings.HasPrefix(e.Repo, "https://github.com/"):
+		case strings.HasPrefix(e.Repo, "https://spring.paloaltonetworks.com/"):
+		case strings.HasPrefix(e.Repo, "https://gitlab.com"):
 			pc.vcs = "git"
 		default:
 			return nil, fmt.Errorf("configuration for %v: cannot infer VCS from %s", path, e.Repo)
