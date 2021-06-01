@@ -6,28 +6,28 @@ paths:
     repo: https://github.com/aporeto-inc/api
 
   /regolithe:
-    repo: https://github.com/aporeto-inc/regolithe
+    repo: https://github.com/PaloAltoNetworks/regolithe
 
   /manipulate:
-    repo: https://github.com/aporeto-inc/manipulate
+    repo: https://github.com/PaloAltoNetworks/manipulate
 
   /tg:
-    repo: https://github.com/aporeto-inc/tg
+    repo: https://github.com/PaloAltoNetworks/tg
 
   /elemental:
-    repo: https://github.com/aporeto-inc/elemental
+    repo: https://github.com/PaloAltoNetworks/elemental
 
   /gaia:
-    repo: https://github.com/aporeto-inc/gaia
+    repo: https://github.com/PaloAltoNetworks/gaia
 
   /bahamut:
-    repo: https://github.com/aporeto-inc/bahamut
+    repo: https://github.com/PaloAltoNetworks/bahamut
 
   /addedeffect:
-    repo: https://github.com/aporeto-inc/addedeffect
+    repo: https://github.com/PaloAltoNetworks/addedeffect
 
   /midgard-lib:
-    repo: https://github.com/aporeto-inc/midgard-lib
+    repo: https://github.com/PaloAltoNetworks/midgard-lib
 
   /trireme-lib:
     repo: https://github.com/aporeto-inc/trireme-lib
@@ -36,10 +36,10 @@ paths:
     repo: https://github.com/aporeto-inc/groomer
 
   /phoenix:
-    repo: https://github.com/aporeto-inc/phoenix
+    repo: https://github.com/PaloAltoNetworks/phoenix
 
   /wsc:
-    repo: https://github.com/aporeto-inc/wsc
+    repo: https://github.com/PaloAltoNetworks/wsc
 
   /remod:
     repo: https://github.com/aporeto-inc/remod
@@ -279,4 +279,13 @@ paths:
 
   /prismacloud:
     repo: https://github.com/aporeto-inc/prismacloud
+    private: true
+
+  /concourse-tools:
+    # including gogo
+    repo: https://github.com/aporeto-inc/concourse-tools
+    private: true
+
+  /concourse-pipelines:
+    repo: https://github.com/aporeto-inc/concourse-pipelines
     private: true

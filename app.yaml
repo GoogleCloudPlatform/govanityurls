@@ -1,5 +1,5 @@
-runtime: go111
+runtime: go115
 
 handlers:
-- url: /.*
-  script: auto
+  - url: /.*
+    script: auto

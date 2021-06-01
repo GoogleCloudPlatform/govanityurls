@@ -74,8 +74,11 @@ func newHandler(config []byte) (*handler, error) {
 		switch {
 		case e.Display != "":
 			// Already filled in.
-		case strings.HasPrefix(e.Repo, "https://github.com/"):
+		case strings.HasPrefix(e.Repo, "https://github.com/") || strings.HasPrefix(e.Repo, "https://spring.paloaltonetworks.com/"):
 			pc.display = fmt.Sprintf("%v %v/tree/master{/dir} %v/blob/master{/dir}/{file}#L{line}", e.Repo, e.Repo, e.Repo)
+		case strings.HasPrefix(e.Repo, "https://gitlab.com"):
+			// note: seems to work without the -, too, but this looks reasonable
+			pc.display = fmt.Sprintf("%v %v/-/tree/master{/dir} %v/-/blob/master{/dir}/{file}#L{line}", e.Repo, e.Repo, e.Repo)
 		case strings.HasPrefix(e.Repo, "https://bitbucket.org"):
 			pc.display = fmt.Sprintf("%v %v/src/default{/dir} %v/src/default{/dir}/{file}#{file}-{line}", e.Repo, e.Repo, e.Repo)
 		}
@@ -85,7 +88,7 @@ func newHandler(config []byte) (*handler, error) {
 			if e.VCS != "bzr" && e.VCS != "git" && e.VCS != "hg" && e.VCS != "svn" {
 				return nil, fmt.Errorf("configuration for %v: unknown VCS %s", path, e.VCS)
 			}
-		case strings.HasPrefix(e.Repo, "https://github.com/"):
+		case strings.HasPrefix(e.Repo, "https://github.com/") || strings.HasPrefix(e.Repo, "https://spring.paloaltonetworks.com/") || strings.HasPrefix(e.Repo, "https://gitlab.com"):
 			pc.vcs = "git"
 		default:
 			return nil, fmt.Errorf("configuration for %v: cannot infer VCS from %s", path, e.Repo)
@@ -157,7 +160,7 @@ var indexTmpl = template.Must(template.New("index").Parse(`<!DOCTYPE html>
 <html>
 <h1>{{.Host}}</h1>
 <ul>
-{{range .Handlers}}<li><a href="https://godoc.org/{{.}}">{{.}}</a></li>{{end}}
+{{range .Handlers}}<li><a href="https://pkg.go.dev/{{.}}">{{.}}</a></li>{{end}}
 </ul>
 </html>
 `))
@@ -168,10 +171,10 @@ var vanityTmpl = template.Must(template.New("vanity").Parse(`<!DOCTYPE html>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <meta name="go-import" content="{{.Import}} {{.VCS}} {{.Repo}}">
 <meta name="go-source" content="{{.Import}} {{.Display}}">
-<meta http-equiv="refresh" content="0; url=https://godoc.org/{{.Import}}/{{.Subpath}}">
+<meta http-equiv="refresh" content="0; url=https://pkg.go.dev/{{.Import}}/{{.Subpath}}">
 </head>
 <body>
-Nothing to see here; <a href="https://godoc.org/{{.Import}}/{{.Subpath}}">see the package on godoc</a>.
+Nothing to see here; <a href="https://pkg.go.dev/{{.Import}}/{{.Subpath}}">see the package on pkg.go.dev</a>.
 </body>
 </html>`))
 

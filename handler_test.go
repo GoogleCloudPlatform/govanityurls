@@ -17,6 +17,7 @@ package main
 import (
 	"bytes"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"sort"
@@ -25,10 +26,9 @@ import (
 
 func TestHandler(t *testing.T) {
 	tests := []struct {
-		name   string
-		config string
-		path   string
-
+		name     string
+		config   string
+		path     string
 		goImport string
 		goSource string
 	}{
@@ -112,7 +112,9 @@ func TestHandler(t *testing.T) {
 			continue
 		}
 		data, err := ioutil.ReadAll(resp.Body)
-		resp.Body.Close()
+		if err := resp.Body.Close(); err != nil {
+			log.Fatal(err)
+		}
 		s.Close()
 		if resp.StatusCode != http.StatusOK {
 			t.Errorf("%s: status code = %s; want 200 OK", test.name, resp.Status)
@@ -237,10 +239,10 @@ func TestPathConfigSetFind(t *testing.T) {
 			want:  "/y",
 		},
 		{
-			paths: []string{"/example/helloworld", "/", "/y", "/foo"},
-			query: "/x/y/",
-			want:  "/",
-			subpath:  "x/y/",
+			paths:   []string{"/example/helloworld", "/", "/y", "/foo"},
+			query:   "/x/y/",
+			want:    "/",
+			subpath: "x/y/",
 		},
 		{
 			paths: []string{"/example/helloworld", "/y", "/foo"},
@@ -306,7 +308,9 @@ func TestCacheHeader(t *testing.T) {
 			t.Errorf("%s: http.Get: %v", test.name, err)
 			continue
 		}
-		resp.Body.Close()
+		if err := resp.Body.Close(); err != nil {
+			log.Fatal(err)
+		}
 		got := resp.Header.Get("Cache-Control")
 		if got != test.cacheControl {
 			t.Errorf("%s: Cache-Control header = %q; want %q", test.name, got, test.cacheControl)

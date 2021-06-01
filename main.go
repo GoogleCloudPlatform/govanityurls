@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//+build !appengine
-
 package main
 
 import (
@@ -42,7 +40,12 @@ func main() {
 		log.Fatal(err)
 	}
 	http.Handle("/", h)
-	if err := http.ListenAndServe(":8080", nil); err != nil {
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		log.Fatal(err)
 	}
 }
