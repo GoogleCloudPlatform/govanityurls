@@ -28,6 +28,10 @@ jobs:
         with:
           go-version: ${{ matrix.go }}
 
+      - name: setup
+        run: |
+          go get github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+
       - name: test
         run: |
           make lint
