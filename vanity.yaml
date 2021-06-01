@@ -281,11 +281,8 @@ paths:
     repo: https://github.com/aporeto-inc/prismacloud
     private: true
 
-  /gogo:
-    repo: https://github.com/aporeto-inc/gogo
-    private: true
-
   /concourse-tools:
+    # including gogo
     repo: https://github.com/aporeto-inc/concourse-tools
     private: true
 
