@@ -1,7 +1,6 @@
 host: go.aporeto.io
 
 paths:
-  ## Public
   /api:
     repo: https://github.com/aporeto-inc/api
 
@@ -288,4 +287,12 @@ paths:
 
   /concourse-pipelines:
     repo: https://github.com/aporeto-inc/concourse-pipelines
+    private: true
+
+  /domingo:
+    repo: https://github.com/aporeto-inc/domingo
+    private: true
+
+  /aws-lib:
+    repo: https://github.com/aporeto-inc/aws-lib
     private: true
