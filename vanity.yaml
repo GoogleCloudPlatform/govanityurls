@@ -68,6 +68,10 @@ paths:
     repo: https://github.com/aporeto-inc/apotests-lib
     private: true
 
+  /apotests-driver:
+    repo: https://github.com/aporeto-inc/apotests-driver
+    private: true
+
   /cosmomemory:
     repo: https://github.com/aporeto-inc/cosmomemory
     private: true
