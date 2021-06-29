@@ -36,6 +36,7 @@ type pathConfig struct {
 	path    string
 	repo    string
 	display string
+	home    string
 	vcs     string
 }
 
@@ -46,6 +47,7 @@ func newHandler(config []byte) (*handler, error) {
 		Paths    map[string]struct {
 			Repo    string `yaml:"repo,omitempty"`
 			Display string `yaml:"display,omitempty"`
+			Home    string `yaml:"home,omitempty"`
 			VCS     string `yaml:"vcs,omitempty"`
 		} `yaml:"paths,omitempty"`
 	}
@@ -66,6 +68,7 @@ func newHandler(config []byte) (*handler, error) {
 			path:    strings.TrimSuffix(path, "/"),
 			repo:    e.Repo,
 			display: e.Display,
+			home:    e.Home,
 			vcs:     e.VCS,
 		}
 		switch {
@@ -106,18 +109,26 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Cache-Control", h.cacheControl)
+
+	importStr := h.Host(r) + pc.path
+	redirectURL := fmt.Sprintf("https://pkg.go.dev/%s/%s", importStr, subpath)
+	if pc.home != "" {
+		redirectURL = pc.home
+	}
 	if err := vanityTmpl.Execute(w, struct {
-		Import  string
-		Subpath string
-		Repo    string
-		Display string
-		VCS     string
+		Import      string
+		Subpath     string
+		Repo        string
+		Display     string
+		VCS         string
+		RedirectURL string
 	}{
-		Import:  h.Host(r) + pc.path,
-		Subpath: subpath,
-		Repo:    pc.repo,
-		Display: pc.display,
-		VCS:     pc.vcs,
+		Import:      importStr,
+		Subpath:     subpath,
+		Repo:        pc.repo,
+		Display:     pc.display,
+		VCS:         pc.vcs,
+		RedirectURL: redirectURL,
 	}); err != nil {
 		http.Error(w, "cannot render the page", http.StatusInternalServerError)
 	}
@@ -163,10 +174,10 @@ var vanityTmpl = template.Must(template.New("vanity").Parse(`<!DOCTYPE html>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <meta name="go-import" content="{{.Import}} {{.VCS}} {{.Repo}}">
 <meta name="go-source" content="{{.Import}} {{.Display}}">
-<meta http-equiv="refresh" content="0; url=https://pkg.go.dev/{{.Import}}/{{.Subpath}}">
+<meta http-equiv="refresh" content="0; url={{.RedirectURL}}">
 </head>
 <body>
-Nothing to see here; <a href="https://pkg.go.dev/{{.Import}}/{{.Subpath}}">see the package on pkg.go.dev</a>.
+Nothing to see here; <a href="{{.RedirectURL}}">see the package on {{.RedirectURL}}</a>.
 </body>
 </html>`))
 
