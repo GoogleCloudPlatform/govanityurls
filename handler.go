@@ -134,15 +134,24 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+type indexDTO struct {
+	Import string
+	URL    string
+}
+
 func (h *handler) serveIndex(w http.ResponseWriter, r *http.Request) {
 	host := h.Host(r)
-	handlers := make([]string, len(h.paths))
+	handlers := make([]indexDTO, len(h.paths))
 	for i, h := range h.paths {
-		handlers[i] = host + h.path
+		url := fmt.Sprintf("https://pkg.go.dev/%s", host+h.path)
+		if h.home != "" {
+			url = h.home
+		}
+		handlers[i] = indexDTO{Import: host + h.path, URL: url}
 	}
 	if err := indexTmpl.Execute(w, struct {
 		Host     string
-		Handlers []string
+		Handlers []indexDTO
 	}{
 		Host:     host,
 		Handlers: handlers,
@@ -163,7 +172,7 @@ var indexTmpl = template.Must(template.New("index").Parse(`<!DOCTYPE html>
 <html>
 <h1>{{.Host}}</h1>
 <ul>
-{{range .Handlers}}<li><a href="https://pkg.go.dev/{{.}}">{{.}}</a></li>{{end}}
+{{range .Handlers}}<li><a href="{{.URL}}">{{.Import}}</a></li>{{end}}
 </ul>
 </html>
 `))
