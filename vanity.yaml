@@ -32,7 +32,7 @@ paths:
     repo: https://github.com/aporeto-inc/trireme-lib
 
   /groomer:
-    repo: https://github.com/aporeto-inc/groomer
+    repo: https://github.com/aporeto-inc/attic/groomer
 
   /phoenix:
     repo: https://github.com/PaloAltoNetworks/phoenix
@@ -299,4 +299,8 @@ paths:
 
   /aws-lib:
     repo: https://github.com/aporeto-inc/aws-lib
+    private: true
+  
+  /k8s-api-codegen:
+    repo: https://github.com/aporeto-inc/k8s-api-codegen
     private: true
