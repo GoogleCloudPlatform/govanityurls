@@ -306,9 +306,9 @@ paths:
     private: true
 
   /sample-lib-two:
-    repo: https://gitlab.com/prismacloud/pcn/sample-lib-two
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/sample-lib-two
     private: true
 
   /sample-app-three:
-    repo: https://gitlab.com/prismacloud/pcn/sample-app-three
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/sample-app-three
     private: true
