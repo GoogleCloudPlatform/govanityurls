@@ -173,7 +173,7 @@ paths:
     private: true
 
   /enforcerd:
-    repo: https://github.com/aporeto-inc/enforcerd
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/enforcerd
     private: true
 
   /apoctl:
@@ -193,7 +193,7 @@ paths:
     private: true
 
   /aporeto-operator:
-    repo: https://github.com/aporeto-inc/aporeto-operator
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/aporeto-operator
     private: true
 
   /apotests:
@@ -277,11 +277,11 @@ paths:
     private: true
 
   /cns-agent-boot:
-    repo: https://github.com/aporeto-inc/cns-agent-boot
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/cns-agent-boot
     private: true
 
   /cns-agent-mgr:
-    repo: https://github.com/aporeto-inc/cns-agent-mgr
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/cns-agent-mgr
     private: true
 
   /prismacloud:
@@ -306,7 +306,7 @@ paths:
     private: true
 
   /k8s-api-codegen:
-    repo: https://github.com/aporeto-inc/k8s-api-codegen
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/k8s-api-codegen
     private: true
 
   /sample-lib-two:
