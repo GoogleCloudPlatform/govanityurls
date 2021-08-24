@@ -256,6 +256,10 @@ paths:
     repo: https://github.com/aporeto-inc/umbreon
     private: true
 
+  /sylveon:
+    repo: https://github.com/aporeto-inc/sylveon
+    private: true
+
   /leafeon:
     repo: https://github.com/aporeto-inc/leafeon
     private: true
@@ -311,4 +315,8 @@ paths:
 
   /sample-app-three:
     repo: https://git.scm.prismacloud.io/prismacloud/pcn/sample-app-three
+    private: true
+
+  /zell:
+    repo: https://github.com/aporeto-inc/zell
     private: true
