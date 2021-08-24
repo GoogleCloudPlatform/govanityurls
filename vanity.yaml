@@ -45,11 +45,11 @@ paths:
 
   ## Private
   /underwater:
-    repo: https://github.com/aporeto-inc/underwater
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/underwater
     private: true
 
   /doublecut:
-    repo: https://github.com/aporeto-inc/doublecut
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/doublecut
     private: true
 
   /netlink-go:
@@ -61,7 +61,7 @@ paths:
     private: true
 
   /apocheck:
-    repo: https://github.com/aporeto-inc/apocheck
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/apocheck
     private: true
 
   /apotests-lib:
@@ -73,7 +73,7 @@ paths:
     private: true
 
   /cosmomemory:
-    repo: https://github.com/aporeto-inc/cosmomemory
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/cosmomemory
     private: true
 
   /godog:
@@ -285,7 +285,7 @@ paths:
     private: true
 
   /prismacloud:
-    repo: https://github.com/aporeto-inc/prismacloud
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/prismacloud
     private: true
 
   /concourse-tools:
@@ -302,7 +302,7 @@ paths:
     private: true
 
   /aws-lib:
-    repo: https://github.com/aporeto-inc/aws-lib
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/aws-lib
     private: true
 
   /k8s-api-codegen:
