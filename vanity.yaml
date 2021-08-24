@@ -81,7 +81,7 @@ paths:
     private: true
 
   /revive:
-    repo: https://github.com/aporeto-inc/revive
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/revive
     private: true
 
   /squall:
@@ -290,15 +290,15 @@ paths:
 
   /concourse-tools:
     # including gogo
-    repo: https://github.com/aporeto-inc/concourse-tools
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/concourse-tools
     private: true
 
   /concourse-pipelines:
-    repo: https://github.com/aporeto-inc/concourse-pipelines
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/concourse-pipelines
     private: true
 
   /domingo:
-    repo: https://github.com/aporeto-inc/domingo
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/domingo
     private: true
 
   /aws-lib:
