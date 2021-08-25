@@ -8,7 +8,3 @@ runtime: go115
 handlers:
   - url: /.*
     script: auto
-
-    # uncertain if this conflicts with cache-control max-age settings
-    # I hope it ovverides that...
-    expiration: "0d 0h 5m"
