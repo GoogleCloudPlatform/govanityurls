@@ -65,11 +65,11 @@ paths:
     private: true
 
   /apotests-lib:
-    repo: https://github.com/aporeto-inc/apotests-lib
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/apotests-lib
     private: true
 
   /apotests-driver:
-    repo: https://github.com/aporeto-inc/apotests-driver
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/apotests-driver
     private: true
 
   /cosmomemory:
@@ -77,7 +77,7 @@ paths:
     private: true
 
   /godog:
-    repo: https://github.com/aporeto-inc/godog
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/godog
     private: true
 
   /revive:
@@ -185,7 +185,7 @@ paths:
     private: true
 
   /integrations-lib:
-    repo: https://github.com/aporeto-inc/integrations-lib
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/integrations-lib
     private: true
 
   /bireme:
@@ -197,11 +197,11 @@ paths:
     private: true
 
   /apotests:
-    repo: https://github.com/aporeto-inc/apotests
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/apotests
     private: true
 
   /aposystest:
-    repo: https://github.com/aporeto-inc/aposystest
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/aposystest
     private: true
 
   /aporeliable:
@@ -213,15 +213,15 @@ paths:
     private: true
 
   /terraform:
-    repo: https://github.com/aporeto-inc/terraform
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/terraform
     private: true
 
   /ansible:
-    repo: https://github.com/aporeto-inc/ansible
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/ansible
     private: true
 
   /benchmark-suite:
-    repo: https://github.com/aporeto-inc/benchmark-suite
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/benchmark-suite
     private: true
 
   /sputnik:
@@ -233,31 +233,31 @@ paths:
     private: true
 
   /eevee:
-    repo: https://github.com/aporeto-inc/eevee
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/eevee
     private: true
 
   /jolteon:
-    repo: https://github.com/aporeto-inc/jolteon
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/jolteon
     private: true
 
   /flareon:
-    repo: https://github.com/aporeto-inc/flareon
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/flareon
     private: true
 
   /vaporeon:
-    repo: https://github.com/aporeto-inc/vaporeon
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/vaporeon
     private: true
 
   /espeon:
-    repo: https://github.com/aporeto-inc/espeon
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/espeon
     private: true
 
   /umbreon:
-    repo: https://github.com/aporeto-inc/umbreon
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/umbreon
     private: true
 
   /sylveon:
-    repo: https://github.com/aporeto-inc/sylveon
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/sylveon
     private: true
 
   /leafeon:
@@ -265,7 +265,7 @@ paths:
     private: true
 
   /glaceon:
-    repo: https://github.com/aporeto-inc/glaceon
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/glaceon
     private: true
 
   /colonoscopy:
@@ -318,5 +318,5 @@ paths:
     private: true
 
   /zell:
-    repo: https://github.com/aporeto-inc/zell
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/zell
     private: true
