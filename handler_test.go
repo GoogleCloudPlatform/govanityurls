@@ -282,7 +282,7 @@ func TestCacheHeader(t *testing.T) {
 	}{
 		{
 			name:         "default",
-			cacheControl: "public, max-age=86400",
+			cacheControl: "public, max-age=300",
 		},
 		{
 			name:         "specify time",

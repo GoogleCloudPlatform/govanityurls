@@ -55,7 +55,7 @@ func newHandler(config []byte) (*handler, error) {
 		return nil, err
 	}
 	h := &handler{host: parsed.Host}
-	cacheAge := int64(86400) // 24 hours (in seconds)
+	cacheAge := int64(300) // time in seconds, previously this was 86,400 (24h)
 	if parsed.CacheAge != nil {
 		cacheAge = *parsed.CacheAge
 		if cacheAge < 0 {
