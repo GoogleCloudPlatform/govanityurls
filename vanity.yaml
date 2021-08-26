@@ -165,11 +165,11 @@ paths:
     private: true
 
   /claire:
-    repo: https://github.com/aporeto-inc/claire
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/claire
     private: true
 
   /wedge:
-    repo: https://github.com/aporeto-inc/wedge
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/wedge
     private: true
 
   /enforcerd:
@@ -177,11 +177,11 @@ paths:
     private: true
 
   /apoctl:
-    repo: https://github.com/aporeto-inc/apoctl
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/apoctl
     private: true
 
   /backend:
-    repo: https://github.com/aporeto-inc/backend
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/backend
     private: true
 
   /integrations-lib:
@@ -209,7 +209,7 @@ paths:
     private: true
 
   /splunk:
-    repo: https://github.com/aporeto-inc/splunk
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/splunk
     private: true
 
   /terraform:
@@ -229,7 +229,7 @@ paths:
     private: true
 
   /spammer:
-    repo: https://github.com/aporeto-inc/spammer
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/spammer
     private: true
 
   /eevee:
