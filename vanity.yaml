@@ -43,6 +43,9 @@ paths:
   /remod:
     repo: https://github.com/aporeto-inc/remod
 
+  /gaia-k8s:
+    repo: https://github.com/PaloAltoNetworks/gaia-k8s
+
   ## Private
   /underwater:
     repo: https://git.scm.prismacloud.io/prismacloud/pcn/underwater
@@ -319,4 +322,8 @@ paths:
 
   /zell:
     repo: https://git.scm.prismacloud.io/prismacloud/pcn/zell
+    private: true
+
+  /aggregated-apiserver:
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/aggregated-apiserver
     private: true
