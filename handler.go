@@ -36,6 +36,7 @@ type pathConfig struct {
 	path    string
 	repo    string
 	display string
+	home    string
 	vcs     string
 }
 
@@ -46,6 +47,7 @@ func newHandler(config []byte) (*handler, error) {
 		Paths    map[string]struct {
 			Repo    string `yaml:"repo,omitempty"`
 			Display string `yaml:"display,omitempty"`
+			Home    string `yaml:"home,omitempty"`
 			VCS     string `yaml:"vcs,omitempty"`
 		} `yaml:"paths,omitempty"`
 	}
@@ -66,6 +68,7 @@ func newHandler(config []byte) (*handler, error) {
 			path:    strings.TrimSuffix(path, "/"),
 			repo:    e.Repo,
 			display: e.Display,
+			home:    e.Home,
 			vcs:     e.VCS,
 		}
 		switch {
@@ -106,32 +109,49 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Cache-Control", h.cacheControl)
+
+	importStr := h.Host(r) + pc.path
+	redirectURL := fmt.Sprintf("https://pkg.go.dev/%s/%s", importStr, subpath)
+	if pc.home != "" {
+		redirectURL = pc.home
+	}
 	if err := vanityTmpl.Execute(w, struct {
-		Import  string
-		Subpath string
-		Repo    string
-		Display string
-		VCS     string
+		Import      string
+		Subpath     string
+		Repo        string
+		Display     string
+		VCS         string
+		RedirectURL string
 	}{
-		Import:  h.Host(r) + pc.path,
-		Subpath: subpath,
-		Repo:    pc.repo,
-		Display: pc.display,
-		VCS:     pc.vcs,
+		Import:      importStr,
+		Subpath:     subpath,
+		Repo:        pc.repo,
+		Display:     pc.display,
+		VCS:         pc.vcs,
+		RedirectURL: redirectURL,
 	}); err != nil {
 		http.Error(w, "cannot render the page", http.StatusInternalServerError)
 	}
 }
 
+type indexDTO struct {
+	Import string
+	URL    string
+}
+
 func (h *handler) serveIndex(w http.ResponseWriter, r *http.Request) {
 	host := h.Host(r)
-	handlers := make([]string, len(h.paths))
+	handlers := make([]indexDTO, len(h.paths))
 	for i, h := range h.paths {
-		handlers[i] = host + h.path
+		url := fmt.Sprintf("https://pkg.go.dev/%s", host+h.path)
+		if h.home != "" {
+			url = h.home
+		}
+		handlers[i] = indexDTO{Import: host + h.path, URL: url}
 	}
 	if err := indexTmpl.Execute(w, struct {
 		Host     string
-		Handlers []string
+		Handlers []indexDTO
 	}{
 		Host:     host,
 		Handlers: handlers,
@@ -152,7 +172,7 @@ var indexTmpl = template.Must(template.New("index").Parse(`<!DOCTYPE html>
 <html>
 <h1>{{.Host}}</h1>
 <ul>
-{{range .Handlers}}<li><a href="https://pkg.go.dev/{{.}}">{{.}}</a></li>{{end}}
+{{range .Handlers}}<li><a href="{{.URL}}">{{.Import}}</a></li>{{end}}
 </ul>
 </html>
 `))
@@ -163,10 +183,10 @@ var vanityTmpl = template.Must(template.New("vanity").Parse(`<!DOCTYPE html>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <meta name="go-import" content="{{.Import}} {{.VCS}} {{.Repo}}">
 <meta name="go-source" content="{{.Import}} {{.Display}}">
-<meta http-equiv="refresh" content="0; url=https://pkg.go.dev/{{.Import}}/{{.Subpath}}">
+<meta http-equiv="refresh" content="0; url={{.RedirectURL}}">
 </head>
 <body>
-Nothing to see here; <a href="https://pkg.go.dev/{{.Import}}/{{.Subpath}}">see the package on pkg.go.dev</a>.
+Nothing to see here; <a href="{{.RedirectURL}}">see the package on {{.RedirectURL}}</a>.
 </body>
 </html>`))
 
