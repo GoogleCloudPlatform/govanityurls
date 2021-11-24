@@ -2,9 +2,13 @@
 #
 # config ref:
 # https://cloud.google.com/appengine/docs/flexible/nodejs/reference/app-yaml
+#
+# one way to find out which runtimes are available so far is
+# to upgrade to a higher version like "go117" and build it:
+#   gcloud app deploy --project aporetodev --no-promote
 ---
 service: default
-runtime: go115
+runtime: go116
 handlers:
   - url: /.*
     script: auto

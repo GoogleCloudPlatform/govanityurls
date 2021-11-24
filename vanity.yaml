@@ -1,6 +1,9 @@
 host: go.aporeto.io
 
 paths:
+  /a3s:
+    repo: https://github.com/PaloAltoNetworks/a3s
+
   /api:
     repo: https://github.com/aporeto-inc/api
 
