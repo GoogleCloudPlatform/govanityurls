@@ -1,7 +1,7 @@
 # our Go Vanity URL service
 #
 # config ref:
-# https://cloud.google.com/appengine/docs/flexible/nodejs/reference/app-yaml
+# https://cloud.google.com/appengine/docs/standard/go/config/appref#runtime
 #
 # one way to find out which runtimes are available so far is
 # to upgrade to a higher version like "go117" and build it:

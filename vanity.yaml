@@ -4,9 +4,6 @@ paths:
   /a3s:
     repo: https://github.com/PaloAltoNetworks/a3s
 
-  /api:
-    repo: https://github.com/aporeto-inc/api
-
   /regolithe:
     repo: https://github.com/PaloAltoNetworks/regolithe
 
@@ -44,7 +41,7 @@ paths:
     repo: https://github.com/PaloAltoNetworks/wsc
 
   /remod:
-    repo: https://github.com/aporeto-inc/remod
+    repo: https://github.com/PaloAltoNetworks/remod
 
   /gaia-k8s:
     repo: https://github.com/PaloAltoNetworks/gaia-k8s
@@ -60,10 +57,6 @@ paths:
 
   /netlink-go:
     repo: https://github.com/aporeto-inc/netlink-go
-    private: true
-
-  /meistertracer:
-    repo: https://github.com/aporeto-inc/meistertracer
     private: true
 
   /apocheck:
@@ -90,86 +83,6 @@ paths:
     repo: https://git.scm.prismacloud.io/prismacloud/pcn/revive
     private: true
 
-  /squall:
-    repo: https://github.com/aporeto-inc/squall
-    private: true
-
-  /wutai:
-    repo: https://github.com/aporeto-inc/wutai
-    private: true
-
-  /barret:
-    repo: https://github.com/aporeto-inc/barret
-    private: true
-
-  /midgard:
-    repo: https://github.com/aporeto-inc/midgard
-    private: true
-
-  /nanaki:
-    repo: https://github.com/aporeto-inc/nanaki
-    private: true
-
-  /sephiroth:
-    repo: https://github.com/aporeto-inc/sephiroth
-    private: true
-
-  /vince:
-    repo: https://github.com/aporeto-inc/vince
-    private: true
-
-  /highwind:
-    repo: https://github.com/aporeto-inc/highwind
-    private: true
-
-  /zack:
-    repo: https://github.com/aporeto-inc/zack
-    private: true
-
-  /jenova:
-    repo: https://github.com/aporeto-inc/jenova
-    private: true
-
-  /elena:
-    repo: https://github.com/aporeto-inc/elena
-    private: true
-
-  /tagle:
-    repo: https://github.com/aporeto-inc/tagle
-    private: true
-
-  /hojo:
-    repo: https://github.com/aporeto-inc/hojo
-    private: true
-
-  /cactuar:
-    repo: https://github.com/aporeto-inc/cactuar
-    private: true
-
-  /yuffie:
-    repo: https://github.com/aporeto-inc/yuffie
-    private: true
-
-  /yuna:
-    repo: https://github.com/aporeto-inc/yuna
-    private: true
-
-  /tifa:
-    repo: https://github.com/aporeto-inc/tifa
-    private: true
-
-  /marlene:
-    repo: https://github.com/aporeto-inc/marlene
-    private: true
-
-  /meister:
-    repo: https://github.com/aporeto-inc/meister
-    private: true
-
-  /kube-squall:
-    repo: https://github.com/aporeto-inc/kube-squall
-    private: true
-
   /claire:
     repo: https://git.scm.prismacloud.io/prismacloud/pcn/claire
     private: true
@@ -194,10 +107,6 @@ paths:
     repo: https://git.scm.prismacloud.io/prismacloud/pcn/integrations-lib
     private: true
 
-  /bireme:
-    repo: https://github.com/aporeto-inc/bireme
-    private: true
-
   /aporeto-operator:
     repo: https://git.scm.prismacloud.io/prismacloud/pcn/aporeto-operator
     private: true
@@ -208,10 +117,6 @@ paths:
 
   /aposystest:
     repo: https://git.scm.prismacloud.io/prismacloud/pcn/aposystest
-    private: true
-
-  /aporeliable:
-    repo: https://github.com/aporeto-inc/aporeliable
     private: true
 
   /splunk:
@@ -228,10 +133,6 @@ paths:
 
   /benchmark-suite:
     repo: https://git.scm.prismacloud.io/prismacloud/pcn/benchmark-suite
-    private: true
-
-  /sputnik:
-    repo: https://github.com/aporeto-inc/sputnik
     private: true
 
   /spammer:
@@ -266,20 +167,8 @@ paths:
     repo: https://git.scm.prismacloud.io/prismacloud/pcn/sylveon
     private: true
 
-  /leafeon:
-    repo: https://github.com/aporeto-inc/leafeon
-    private: true
-
   /glaceon:
     repo: https://git.scm.prismacloud.io/prismacloud/pcn/glaceon
-    private: true
-
-  /colonoscopy:
-    repo: https://github.com/aporeto-inc/colonoscopy
-    private: true
-
-  /go-twistlock:
-    repo: https://github.com/aporeto-inc/go-twistlock
     private: true
 
   /cns-agent-boot:
@@ -288,6 +177,10 @@ paths:
 
   /cns-agent-mgr:
     repo: https://git.scm.prismacloud.io/prismacloud/pcn/cns-agent-mgr
+    private: true
+
+  /cns-agent-lib:
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/cns-agent-lib
     private: true
 
   /prismacloud:

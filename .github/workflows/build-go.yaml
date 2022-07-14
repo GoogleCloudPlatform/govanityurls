@@ -17,7 +17,7 @@ jobs:
       matrix:
         go:
           - 1.17
-          - 1.16
+          - 1.16 # runtime needed
     steps:
       - uses: actions/checkout@v2
 
@@ -27,7 +27,8 @@ jobs:
 
       - name: setup
         run: |
-          go get github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+          # https://github.com/golangci/golangci-lint/releases/
+          go get github.com/golangci/golangci-lint/cmd/golangci-lint@v1.45.2
 
       - name: test
         run: |
