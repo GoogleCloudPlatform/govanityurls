@@ -19,6 +19,9 @@ paths:
   /gaia:
     repo: https://github.com/PaloAltoNetworks/gaia
 
+  /pcfwmodels:
+    repo: https://github.com/PaloAltoNetworks/pcfwmodels
+
   /bahamut:
     repo: https://github.com/PaloAltoNetworks/bahamut
 
@@ -222,4 +225,8 @@ paths:
 
   /aggregated-apiserver:
     repo: https://git.scm.prismacloud.io/prismacloud/pcn/aggregated-apiserver
+    private: true
+
+  /pcfwbackend:
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/pcfwbackend
     private: true
