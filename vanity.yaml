@@ -230,3 +230,7 @@ paths:
   /pcfwbackend:
     repo: https://git.scm.prismacloud.io/prismacloud/pcn/pcfwbackend
     private: true
+
+  /tfvargen:
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/tfvargen
+    private: true
