@@ -234,3 +234,7 @@ paths:
   /tfvargen:
     repo: https://git.scm.prismacloud.io/prismacloud/pcn/tfvargen
     private: true
+
+  /cloud-ngfw-aws-go:
+    repo: https://git.scm.prismacloud.io/prismacloud/pcn/cloud-ngfw-aws-go
+    private: true
