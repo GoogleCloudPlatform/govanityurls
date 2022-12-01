@@ -7,6 +7,9 @@ paths:
   /bbolt:
     repo: https://github.com/etcd-io/bbolt
 
+  /raft:
+    repo: https://github.com/etcd-io/raft
+
   /gofail:
     repo: https://github.com/etcd-io/gofail
 
