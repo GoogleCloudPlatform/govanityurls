@@ -1,8 +1,8 @@
-host: rakyll.pizza
+host: go.datalift.io
 
 paths:
-  /portmidi:
-    repo: https://github.com/rakyll/portmidi
+  /datalift:
+    repo: https://github.com/DataliftHQ/datalift
 
-  /launchpad:
-    repo: https://github.com/rakyll/launchpad
+  /datalift-cli:
+    repo: https://github.com/DataliftHQ/datalift-cli
