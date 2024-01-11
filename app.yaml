@@ -1,4 +1,4 @@
-runtime: go116
+runtime: go121
 handlers:
 - url: /.*
   script: auto
