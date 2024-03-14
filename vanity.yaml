@@ -1,8 +1,12 @@
 host: go.datalift.io
 
 paths:
+  /admiral:
+    repo: https://github.com/DataliftHQ/admiral
+
   /datalift:
     repo: https://github.com/DataliftHQ/datalift
 
   /datalift-cli:
     repo: https://github.com/DataliftHQ/datalift-cli
+
