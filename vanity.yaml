@@ -1,12 +1,26 @@
-host: go.datalift.io
+host: go.admiral.io
 
 paths:
-  /admiral:
-    repo: https://github.com/DataliftHQ/admiral
+  /admin:
+    repo: https://github.com/DataliftHQ/admiral-admin
 
-  /datalift:
-    repo: https://github.com/DataliftHQ/datalift
+  /api:
+    repo: https://github.com/DataliftHQ/admiral-api
 
-  /datalift-cli:
-    repo: https://github.com/DataliftHQ/datalift-cli
+  /cli:
+    repo: https://github.com/DataliftHQ/admiral-cli
 
+  /core:
+    repo: https://github.com/DataliftHQ/admiral-core
+
+  /cron:
+    repo: https://github.com/DataliftHQ/admiral-cron
+
+  /kubernetes-agent:
+    repo: https://github.com/DataliftHQ/admiral-kubernetes-agent
+
+  /stripe-webhook:
+    repo: https://github.com/DataliftHQ/admiral-stripe-webhook
+
+  /web:
+    repo: https://github.com/DataliftHQ/admiral-web
