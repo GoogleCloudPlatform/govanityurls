@@ -1,5 +1,5 @@
 host: go.admiral.io
-
+cache_max_age: 3600
 paths:
   /admin:
     repo: https://github.com/DataliftHQ/admiral-admin
@@ -18,6 +18,9 @@ paths:
 
   /kubernetes-agent:
     repo: https://github.com/DataliftHQ/admiral-kubernetes-agent
+
+  /proto-core-go:
+    repo: https://github.com/DataliftHQ/admiral-proto-core-go
 
   /stripe-webhook:
     repo: https://github.com/DataliftHQ/admiral-stripe-webhook
